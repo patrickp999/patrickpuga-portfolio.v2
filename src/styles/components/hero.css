@@ -1,5 +1,6 @@
 /* src/styles/components/hero.css */
 
+/* ---------- Layout ---------- */
 .hero-container {
   display: grid;
   place-items: center;
@@ -7,6 +8,9 @@
   padding: 120px 16px 64px;
   background: var(--bg);
   color: var(--text);
+
+  /* Prevent rare horizontal overflow on very small screens */
+  overflow-x: clip;
 }
 
 .hero-inner {
@@ -14,24 +18,38 @@
   max-width: 980px;
   margin: 0 auto;
   text-align: center;
+
+  /* Allows flex/grid children to shrink properly */
+  min-width: 0;
 }
 
-/* Name */
+/* ---------- Name ---------- */
 .hero-name {
   margin: 0;
   line-height: 1.1;
   font-weight: 800;
-  /* Lime pop for the name */
-  color: var(--text); /* light: #16a34a / dark: #22c55e */
+
+  /* Primary hero emphasis */
+  color: var(--text);
+
   font-size: clamp(40px, 8vw, 80px);
+
+  /* Prevent long names from forcing horizontal scroll */
+  overflow-wrap: anywhere;
 }
 
-/* Divider under name */
+/* ---------- Divider under name ---------- */
 .hero-divider {
   margin: 10px auto 12px;
   height: 1px;
-  width: clamp(230px, 40vw, 65%);
+
+  /* Prevent divider from exceeding small mobile width */
+  width: min(65%, 420px);
+  min-width: 160px;
+  max-width: 100%;
+
   border: none;
+
   /* subtle line using accent; blend with border for contrast */
   background: linear-gradient(
     to right,
@@ -41,26 +59,31 @@
   opacity: 0.9;
 }
 
-/* Subtitle */
+/* ---------- Subtitle ---------- */
 .hero-title {
   margin: 0 0 20px 0;
   line-height: 1.1;
   color: var(--primary);
+
   font-size: clamp(30px, 6vw, 70px);
   font-weight: 700;
   letter-spacing: 0.2px;
+
+  /* Prevent subtitle overflow on narrow devices */
+  overflow-wrap: anywhere;
 }
 
-/* Blurb */
+/* ---------- Blurb ---------- */
 .hero-blurb {
   margin: 24px auto 0;
   max-width: 640px;
+
   color: var(--muted);
   font-size: clamp(16px, 2.2vw, 18px);
   line-height: 1.65;
 }
 
-/* ---------- Fade (no vertical motion) ---------- */
+/* ---------- Fade animation (no vertical motion) ---------- */
 .fade-appear,
 .fade-enter {
   opacity: 0;
@@ -79,7 +102,47 @@
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms ease;
+}
+
+/* ---------- Mobile adjustments ---------- */
+@media (max-width: 640px) {
+  .hero-container {
+    /* Keep the hero centered within the mobile viewport */
+    min-height: calc(100svh - var(--nav-height, 72px));
+
+    /* Add extra bottom space so the next section is below the fold */
+    padding: 104px 16px 120px;
+  }
+
+  .hero-inner {
+    max-width: 100%;
+  }
+
+  .hero-name {
+    font-size: clamp(32px, 11vw, 48px);
+  }
+
+  .hero-title {
+    font-size: clamp(24px, 8vw, 36px);
+  }
+
+  .hero-blurb {
+    max-width: 100%;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .hero-divider {
+    width: min(70%, 260px);
+    min-width: 120px;
+  }
+
+  .fade-appear-active,
+  .fade-enter-active {
+    transition: opacity 3000ms ease;
+  }
 }

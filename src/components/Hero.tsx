@@ -3,12 +3,10 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import "../styles/components/hero.css";
 import {
-  DEFAULT_LINKS,
-  EXTRA_BUFFER_MS,
-  FADE_DURATION,
+  computeHeroBaseDelay,
+  getFadeDuration,
   HERO_FALLBACK,
-  LINK_STAGGER_MS,
-} from "../utils/constants"; // used to compute nav timing
+} from "../utils/constants";
 
 export type HeroContent = {
   greeting?: string;
@@ -24,18 +22,17 @@ type HeroProps = {
 export const Hero: React.FC<HeroProps> = ({ data }) => {
   const [mounted, setMounted] = React.useState(false);
   const content: HeroContent = { ...HERO_FALLBACK, ...data };
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 640;
+
+  const viewportWidth =
+    typeof window !== "undefined" ? window.innerWidth : undefined;
+
+  const fadeDuration = getFadeDuration(viewportWidth);
+  const baseDelay = computeHeroBaseDelay(viewportWidth);
 
   React.useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50); // tiny delay to avoid FOUC
     return () => clearTimeout(t);
   }, []);
-
-  // +1 accounts for the Resume item animating after the links
-  const navItemCount = DEFAULT_LINKS.length + 1;
-  const baseDelay = isMobile
-    ? 0
-    : navItemCount * LINK_STAGGER_MS + EXTRA_BUFFER_MS;
 
   const items = [
     <h1
@@ -75,11 +72,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
               <CSSTransition
                 key={i}
                 classNames="fade"
-                timeout={{
-                  appear: FADE_DURATION.appear,
-                  enter: FADE_DURATION.enter,
-                  exit: FADE_DURATION.exit,
-                }}
+                timeout={fadeDuration}
                 appear
               >
                 {el}

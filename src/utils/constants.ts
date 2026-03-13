@@ -22,6 +22,12 @@ export const FADE_DURATION = {
   exit: 300,
 } as const;
 
+export const MOBILE_FADE_DURATION = {
+  appear: 1600,
+  enter: 1600,
+  exit: 300,
+} as const;
+
 /** Stagger per nav item (ms) — keep this in sync with your nav CSS/JS */
 export const LINK_STAGGER_MS = 300;
 export const HAMBURGER_DELAY_MS = LINK_STAGGER_MS;
@@ -35,7 +41,7 @@ export const navItemCount = (linksLen = DEFAULT_LINKS.length) => linksLen + 1;
 /** Total stagger time for all nav items (ms) */
 export const navTotalDelay = (
   linksLen = DEFAULT_LINKS.length,
-  stagger = LINK_STAGGER_MS
+  stagger = LINK_STAGGER_MS,
 ) => navItemCount(linksLen) * stagger;
 
 /**
@@ -47,10 +53,17 @@ export const computeHeroBaseDelay = (
   linksLen = DEFAULT_LINKS.length,
   stagger = LINK_STAGGER_MS,
   buffer = EXTRA_BUFFER_MS,
-  cutoff = MOBILE_CUTOFF
+  cutoff = MOBILE_CUTOFF,
 ) => {
   const isMobile = typeof viewportWidth === "number" && viewportWidth <= cutoff;
   return isMobile ? 0 : navTotalDelay(linksLen, stagger) + buffer;
+};
+
+export const getFadeDuration = (viewportWidth?: number) => {
+  const isMobile =
+    typeof viewportWidth === "number" && viewportWidth <= MOBILE_CUTOFF;
+
+  return isMobile ? MOBILE_FADE_DURATION : FADE_DURATION;
 };
 
 /* ---------------- Hero fallback content ---------------- */

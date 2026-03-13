@@ -1,0 +1,29 @@
+/* ---------- Site layout ---------- */
+
+#root {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 100%;
+}
+
+.site-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ---------- Main content ---------- */
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  padding: 24px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+}

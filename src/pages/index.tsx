@@ -7,6 +7,8 @@ import { Seo } from "../components/seo";
 
 const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
+  const aboutNode = data.about.nodes[0];
+  const workHistoryNodes = data.allContentfulJob.nodes;
 
   return (
     <Layout>
@@ -18,11 +20,14 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
                 subtitle: heroNode.subtitle ?? "",
                 blurb: heroNode.blurb ?? "",
               }
-            : undefined // falls back to hardcoded content inside Hero
+            : undefined
         }
       />
-      <About />
-      <WorkHistory />
+
+      {aboutNode && <About data={aboutNode} />}
+
+      <WorkHistory data={workHistoryNodes} />
+
       <Contact />
     </Layout>
   );
@@ -42,17 +47,38 @@ export const pageQuery = graphql`
         subtitle
       }
     }
+
     about: allContentfulAbout(limit: 1) {
       nodes {
         title
         skills
         avatar {
-          # Modern image field
-          gatsbyImageData(layout: CONSTRAINED, width: 640, placeholder: BLURRED)
+          gatsbyImageData(
+            layout: CONSTRAINED
+            width: 640
+            placeholder: BLURRED
+            formats: [AUTO, WEBP, AVIF]
+          )
           title
           description
         }
-        # Start minimal; add references when you embed entries/assets in rich text
+        description {
+          raw
+        }
+      }
+    }
+
+    allContentfulJob(sort: { order: ASC }) {
+      nodes {
+        date
+        order
+        company
+        dateRange
+        title
+        location
+        url {
+          raw
+        }
         description {
           raw
         }
