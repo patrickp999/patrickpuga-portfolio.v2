@@ -26,7 +26,7 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
 
       {aboutNode && <About data={aboutNode} />}
 
-      <WorkHistory data={workHistoryNodes} />
+      <WorkHistory data={[...workHistoryNodes]} />
 
       <Contact />
     </Layout>

@@ -21,15 +21,14 @@ type HeroProps = {
 
 export const Hero: React.FC<HeroProps> = ({ data }) => {
   const [mounted, setMounted] = React.useState(false);
+  const [viewportWidth, setViewportWidth] = React.useState<number | undefined>(undefined);
   const content: HeroContent = { ...HERO_FALLBACK, ...data };
-
-  const viewportWidth =
-    typeof window !== "undefined" ? window.innerWidth : undefined;
 
   const fadeDuration = getFadeDuration(viewportWidth);
   const baseDelay = computeHeroBaseDelay(viewportWidth);
 
   React.useEffect(() => {
+    setViewportWidth(window.innerWidth);
     const t = setTimeout(() => setMounted(true), 50); // tiny delay to avoid FOUC
     return () => clearTimeout(t);
   }, []);

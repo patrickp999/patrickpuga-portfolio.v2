@@ -23,8 +23,8 @@ export const FADE_DURATION = {
 } as const;
 
 export const MOBILE_FADE_DURATION = {
-  appear: 1600,
-  enter: 1600,
+  appear: 1000,
+  enter: 1000,
   exit: 300,
 } as const;
 
@@ -33,7 +33,7 @@ export const LINK_STAGGER_MS = 300;
 export const HAMBURGER_DELAY_MS = LINK_STAGGER_MS;
 
 /** Extra cushion after the last nav item before starting hero */
-export const EXTRA_BUFFER_MS = 300;
+export const EXTRA_BUFFER_MS = 100;
 
 /** Number of animated nav items = links + Resume */
 export const navItemCount = (linksLen = DEFAULT_LINKS.length) => linksLen + 1;
@@ -46,7 +46,8 @@ export const navTotalDelay = (
 
 /**
  * Compute when hero should start (ms).
- * If on mobile (<= MOBILE_CUTOFF), start immediately (0).
+ * Mobile: wait for hamburger to finish (delay + fade duration + buffer).
+ * Desktop: wait for all nav items to stagger in + buffer.
  */
 export const computeHeroBaseDelay = (
   viewportWidth: number | undefined,
@@ -56,7 +57,9 @@ export const computeHeroBaseDelay = (
   cutoff = MOBILE_CUTOFF,
 ) => {
   const isMobile = typeof viewportWidth === "number" && viewportWidth <= cutoff;
-  return isMobile ? 0 : navTotalDelay(linksLen, stagger) + buffer;
+  return isMobile
+    ? HAMBURGER_DELAY_MS + MOBILE_FADE_DURATION.appear + buffer
+    : navTotalDelay(linksLen, stagger) + buffer;
 };
 
 export const getFadeDuration = (viewportWidth?: number) => {
