@@ -7,9 +7,21 @@
 }
 
 .work-history-heading {
-  margin: 0 0 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 40px 0;
   font-weight: 800;
   font-size: clamp(22px, 3.5vw, 28px);
+  white-space: nowrap;
+}
+
+.work-history-heading::after {
+  content: "";
+  display: block;
+  height: 1px;
+  flex: 1;
+  background-color: var(--primary);
 }
 
 .work-history-layout {
@@ -62,11 +74,19 @@
 }
 
 .work-history-panel {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease;
 }
 
 .work-history-panel.is-active {
-  display: block;
+  position: relative;
+  opacity: 1;
+  visibility: visible;
 }
 
 .work-history-job-title {
@@ -125,11 +145,17 @@
 
   .work-history-tabs {
     display: flex;
-    gap: 8px;
+    gap: 0;
     overflow-x: auto;
+    overflow-y: hidden;
     margin: 0 0 24px 0;
-    padding-bottom: 6px;
-    scrollbar-width: thin;
+    padding-bottom: 0;
+    border-bottom: 2px solid var(--border);
+    scrollbar-width: none;
+  }
+
+  .work-history-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .work-history-tab-item + .work-history-tab-item {
@@ -137,14 +163,19 @@
   }
 
   .work-history-tab {
-    min-width: 140px;
+    min-width: max-content;
+    height: auto;
     border-left: 0;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 0;
     text-align: center;
+    white-space: nowrap;
+    padding: 12px 14px 10px;
+    display: block;
+    margin-bottom: -2px;
   }
 
   .work-history-tab.is-active {
     border-left-color: transparent;
-    border-bottom-color: var(--primary);
+    border-bottom: 2px solid var(--primary);
   }
 }
