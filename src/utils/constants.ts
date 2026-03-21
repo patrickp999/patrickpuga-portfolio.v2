@@ -8,7 +8,7 @@ export const MOBILE_CUTOFF = 640; // phone-only cutoff for scroll/hamburger beha
 
 export const DEFAULT_LINKS = [
   { url: "#about", name: "About" },
-  { url: "#work", name: "Work" },
+  { url: "#work-history", name: "Work" },
   { url: "#contact", name: "Contact" },
 ] as const;
 

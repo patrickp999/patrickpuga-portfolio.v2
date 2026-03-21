@@ -106,7 +106,18 @@ export const Nav: React.FC = () => {
                           >
                             {item.kind === "link" ? (
                               item.url.startsWith("#") ? (
-                                <a className="nav-link" href={item.url}>
+                                <a
+                                  className="nav-link"
+                                  href={item.url}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    const isMobile = window.innerWidth <= 640;
+                                    const id = item.url === "#contact" && isMobile
+                                      ? "contact-hero"
+                                      : item.url.slice(1);
+                                    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                                  }}
+                                >
                                   {item.name}
                                 </a>
                               ) : (
