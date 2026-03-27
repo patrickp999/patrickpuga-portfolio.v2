@@ -2,11 +2,13 @@ import * as React from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import "../styles/components/hero.css";
+import "../styles/components/contact.css";
 import {
   computeHeroBaseDelay,
   getFadeDuration,
   HERO_FALLBACK,
 } from "../utils/constants";
+import SocialLinks from "./SocialLinks";
 
 export type HeroContent = {
   greeting?: string;
@@ -60,6 +62,14 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     >
       {content.blurb}
     </p>,
+    <div
+      key="social"
+      id="contact-hero"
+      className="hero-social"
+      style={{ transitionDelay: `${baseDelay + 500}ms` }}
+    >
+      <SocialLinks className="contact-links--mobile" />
+    </div>,
   ];
 
   return (
