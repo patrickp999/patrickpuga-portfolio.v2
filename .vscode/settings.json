@@ -22,5 +22,5 @@
       "mode": "auto"
     }
   ],
-  "kiroAgent.configureMCP": "Disabled"
+  "kiroAgent.configureMCP": "Enabled"
 }

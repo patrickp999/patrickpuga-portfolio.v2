@@ -5,3 +5,6 @@ public/
 gatsby-types.d.ts
 # macOS
 .DS_Store
+
+# Kiro
+.kiro/settings/
