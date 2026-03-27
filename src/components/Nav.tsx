@@ -31,8 +31,7 @@ export const Nav: React.FC = () => {
   const headerClasses = [
     "nav-header",
     scrollDirection !== "none" ? "is-scrolled" : "",
-    scrollDirection === "down" ? "hide" : "",
-    scrollDirection === "up" ? "shadow" : "",
+    scrollDirection !== "none" ? "shadow" : "",
   ].join(" ");
 
   const handleMenuToggle = () => {
