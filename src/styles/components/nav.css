@@ -11,6 +11,13 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, height 0.2s ease;
 }
 
+/* Solid background on desktop so nav text is always readable */
+@media (min-width: 641px) {
+  .nav-header {
+    background: var(--bg);
+  }
+}
+
 /* Shrink when scrolling */
 .nav-header.is-scrolled {
   height: 56px;
