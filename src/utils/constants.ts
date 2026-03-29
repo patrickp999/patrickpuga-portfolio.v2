@@ -12,7 +12,7 @@ export const DEFAULT_LINKS = [
   { url: "#contact", name: "Contact" },
 ] as const;
 
-export const RESUME_HREF = "/Resume.pdf";
+export const RESUME_HREF = "/Patrick_Puga_Resume.pdf";
 
 /* --------------- Animation timing --------------- */
 
