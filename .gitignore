@@ -8,3 +8,4 @@ gatsby-types.d.ts
 
 # Kiro
 .kiro/settings/
+.kiro/hooks/
