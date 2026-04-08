@@ -2,13 +2,19 @@
 import * as React from "react";
 import type { PageProps } from "gatsby";
 import { graphql } from "gatsby";
-import { About, Contact, Hero, Layout, WorkHistory } from "../components";
+import { Contact, Hero, Layout, Experience, Projects } from "../components";
 import { Seo } from "../components/seo";
 
 const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
   const aboutNode = data.about.nodes[0];
   const workHistoryNodes = data.allContentfulJob.nodes;
+
+  const skills: string[] = Array.isArray(aboutNode?.skills)
+    ? Array.from(aboutNode.skills)
+        .filter((s): s is string => typeof s === "string" && s.trim().length > 0)
+        .map((s) => s.trim())
+    : [];
 
   return (
     <Layout>
@@ -19,14 +25,17 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
                 name: heroNode.name ?? "",
                 subtitle: heroNode.subtitle ?? "",
                 blurb: heroNode.blurb ?? "",
+                avatar: aboutNode?.avatar?.gatsbyImageData,
+                bio: aboutNode?.description?.raw,
+                tags: skills,
               }
             : undefined
         }
       />
 
-      {aboutNode && <About data={aboutNode} />}
+      <Experience data={[...workHistoryNodes]} />
 
-      <WorkHistory data={[...workHistoryNodes]} />
+      <Projects />
 
       <Contact />
     </Layout>

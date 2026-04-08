@@ -7,12 +7,11 @@ export const DELTA = 5;
 export const MOBILE_CUTOFF = 640; // phone-only cutoff for scroll/hamburger behavior
 
 export const DEFAULT_LINKS = [
-  { url: "#about", name: "About" },
-  { url: "#work-history", name: "Work" },
+  { url: "#experience", name: "Experience" },
+  { url: "#projects", name: "Projects" },
   { url: "#contact", name: "Contact" },
+  { url: "/blog", name: "Blog" },
 ] as const;
-
-export const RESUME_HREF = "/Patrick_Puga_Resume.pdf";
 
 /* --------------- Animation timing --------------- */
 
@@ -35,8 +34,8 @@ export const HAMBURGER_DELAY_MS = LINK_STAGGER_MS;
 /** Extra cushion after the last nav item before starting hero */
 export const EXTRA_BUFFER_MS = 100;
 
-/** Number of animated nav items = links + Resume */
-export const navItemCount = (linksLen = DEFAULT_LINKS.length) => linksLen + 1;
+/** Number of animated nav items */
+export const navItemCount = (linksLen = DEFAULT_LINKS.length) => linksLen;
 
 /** Total stagger time for all nav items (ms) */
 export const navTotalDelay = (
@@ -76,4 +75,6 @@ export const HERO_FALLBACK: HeroContent = {
   subtitle: "Sr. Software Engineer",
   blurb:
     "I'm a skilled software engineer based in Denver, Colorado. I have a passion for technology and expertise building exceptional, secure, and highly scalable websites and applications.",
+  bio: "",
+  tags: [],
 };

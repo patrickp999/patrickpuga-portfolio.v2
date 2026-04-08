@@ -1,0 +1,28 @@
+/* ---------- Footer ---------- */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 24px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.footer-separator {
+  color: var(--border);
+}
+
+.footer-resume {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.footer-resume:hover,
+.footer-resume:focus {
+  color: var(--accent);
+}

@@ -8,10 +8,9 @@ type Props = {
   open: boolean;
   onClose: () => void;
   links: ReadonlyArray<LinkItem>;
-  resumeHref: string;
 };
 
-export const Menu: React.FC<Props> = ({ open, onClose, links, resumeHref }) => {
+export const Menu: React.FC<Props> = ({ open, onClose, links }) => {
   React.useEffect(() => {
     const closeOnEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === "Esc") onClose();
@@ -19,6 +18,10 @@ export const Menu: React.FC<Props> = ({ open, onClose, links, resumeHref }) => {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [onClose]);
+
+  // Separate anchor links from route links (Blog goes last with emphasis)
+  const anchorLinks = links.filter((l) => l.url.startsWith("#"));
+  const routeLinks = links.filter((l) => !l.url.startsWith("#"));
 
   return (
     <>
@@ -32,33 +35,47 @@ export const Menu: React.FC<Props> = ({ open, onClose, links, resumeHref }) => {
         aria-hidden={!open}
         aria-label="Mobile menu"
       >
-        <div className="menu-head">
-          <strong style={{ color: "var(--text)" }}>Menu</strong>
-          <button aria-label="Close menu" onClick={onClose}>
-            ✕
-          </button>
-        </div>
         <nav className="menu-body">
-          {links.map(({ url, name }) =>
-            url.startsWith("#") ? (
-              <a key={name} href={url} onClick={onClose} className="menu-link">
-                {name}
-              </a>
-            ) : (
-              <Link key={name} to={url} onClick={onClose} className="menu-link">
-                {name}
-              </Link>
-            )
-          )}
           <a
+            href="/"
+            onClick={(e) => {
+              if (window.location.pathname === "/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+              onClose();
+            }}
             className="menu-link"
-            href={resumeHref}
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            onClick={onClose}
           >
-            Resume ↗
+            Home
           </a>
+          {anchorLinks.map(({ url, name }) => (
+            <a
+              key={name}
+              href={`/${url}`}
+              onClick={(e) => {
+                if (window.location.pathname === "/") {
+                  e.preventDefault();
+                  const id = url.slice(1);
+                  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                }
+                onClose();
+              }}
+              className="menu-link"
+            >
+              {name}
+            </a>
+          ))}
+          {routeLinks.map(({ url, name }) => (
+            <Link
+              key={name}
+              to={url}
+              onClick={onClose}
+              className="menu-link menu-link--emphasis"
+            >
+              {name}
+            </Link>
+          ))}
         </nav>
       </aside>
     </>

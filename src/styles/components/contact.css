@@ -14,48 +14,15 @@
   color: var(--muted);
   font-size: 28px;
   line-height: 1;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .contact-icon-link:hover,
 .contact-icon-link:focus {
-  color: var(--muted);
+  color: var(--accent);
   transform: scale(1.2);
 }
 
 .contact-icon-link:active {
   transform: scale(1.1);
-}
-
-/* Desktop: show in footer, hide in hero */
-.contact-links--mobile {
-  display: none;
-}
-
-.contact-links--desktop {
-  display: flex;
-}
-
-/* Mobile: hide in footer, show in hero */
-@media (max-width: 640px) {
-  .contact-links--mobile {
-    display: flex;
-  }
-
-  .contact-links--desktop {
-    display: none;
-  }
-
-  .contact-section {
-    /* Keep in DOM so #contact anchor still works — just collapse it */
-    padding: 0;
-    height: 0;
-    overflow: hidden;
-  }
-
-  .hero-social {
-    margin-top: 32px;
-    display: flex;
-    justify-content: center;
-  }
 }

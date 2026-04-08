@@ -3,6 +3,7 @@ import "../styles/theme.css";
 import "../styles/global.css";
 import "../styles/components/layout.css";
 import Nav from "./Nav";
+import Footer from "./Footer";
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -14,9 +15,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
           {children}
         </main>
 
-        <footer className="footer">
-          <small>© {new Date().getFullYear()} Patrick Puga</small>
-        </footer>
+        <Footer />
       </div>
     </div>
   );

@@ -19,11 +19,4 @@
   margin: 0 auto;
 }
 
-/* ---------- Footer ---------- */
-
-.footer {
-  padding: 24px 16px;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  text-align: center;
-}
+/* Footer styles moved to footer.css */

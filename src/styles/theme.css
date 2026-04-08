@@ -1,41 +1,16 @@
-/* Obsidian + Lime Pop (system default) */
+/* Dark theme — single palette */
 :root {
-  --bg: #f7f9fc;
-  --surface: #ffffff;
-  --text: #0a0f1c;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --primary: #16a34a;
-  --primary-700: #166534;
-  --accent: #84cc16;
-  --accent-700: #4d7c0f;
-  --hero-name: #06b6d4;
-
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --text: #E2E8F0;
+  --muted: #64748B;
+  --border: #334155;
+  --accent: #0EA5E9;
+  --accent-hover: #38BDF8;
+  --surface-light: #F8FAFC;
+  --tag-bg: rgba(14, 165, 233, 0.12);
+  --tag-text: #7DD3FC;
   --radius: 12px;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.08);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a0f1c;
-    --surface: #0f172a;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --border: #1f2937;
-    --primary: #22c55e;
-    --primary-700: #16a34a;
-    --accent: #a3e635;
-    --accent-700: #84cc16;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
-  }
-}
-
-/* Optional manual override later: set data-theme="light" | "dark" on <html> */
-:root[data-theme="light"] {
-  color-scheme: light;
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.4);
 }

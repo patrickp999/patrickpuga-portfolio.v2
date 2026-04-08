@@ -1,0 +1,124 @@
+/* Experience section */
+.experience-section {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 16px;
+  color: var(--text);
+}
+
+.experience-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 40px 0;
+  font-weight: 800;
+  font-size: clamp(22px, 3.5vw, 28px);
+  white-space: nowrap;
+}
+
+.experience-heading::after {
+  content: "";
+  display: block;
+  height: 1px;
+  flex: 1;
+  background-color: var(--accent);
+}
+
+/* Card styles */
+.exp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.exp-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Card header: initials on left, meta on right */
+.exp-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Company initials circle */
+.exp-card-initials {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.exp-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.exp-card-title {
+  margin: 0 0 4px 0;
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.exp-card-company {
+  color: var(--accent);
+}
+
+.exp-card-date {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Card description */
+.exp-card-description {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.exp-card-description ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exp-card-description li {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 20px;
+}
+
+.exp-card-description li::before {
+  content: "▹";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.exp-card-description p {
+  margin-bottom: 12px;
+}
+
+.experience-empty {
+  color: var(--muted);
+  opacity: 0.8;
+}

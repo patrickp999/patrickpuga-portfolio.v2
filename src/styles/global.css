@@ -55,14 +55,14 @@ ol {
 }
 
 a {
-  color: var(--primary);
+  color: var(--accent);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover,
 a:focus {
-  color: var(--primary-700);
+  color: var(--accent-hover);
   outline: 0;
 }
 
@@ -98,12 +98,13 @@ button {
   gap: 8px;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
 
 /* Blur mode (matches your old .blur behavior) */
-body.blur #root > .site-container > * {
+/* Blur mode — excludes nav header, menu overlay, and drawer */
+body.blur #root > .site-container > *:not(.nav-header):not(.menu-overlay):not(.menu-drawer) {
   filter: blur(5px) brightness(0.7);
   pointer-events: none;
   user-select: none;
@@ -130,4 +131,25 @@ body.blur #root > .site-container > * {
 .fadelink-appear-active {
   opacity: 1;
   transition: opacity 2s ease; /* match duration here */
+}
+
+/* Scroll-triggered fade-in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 450ms ease var(--delay, 0ms),
+              transform 450ms ease var(--delay, 0ms);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

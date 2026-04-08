@@ -12,7 +12,6 @@ import {
   HAMBURGER_DELAY_MS,
   LINK_STAGGER_MS,
   NAV_HEIGHT,
-  RESUME_HREF,
 } from "../utils/constants";
 import { useScrollDirection } from "../utils/useScrollDirection";
 
@@ -76,19 +75,39 @@ export const Nav: React.FC = () => {
               <nav className="nav-links" aria-label="Section links">
                 <ol className="nav-list">
                   <TransitionGroup component={null}>
+                    {mounted && (
+                      <CSSTransition
+                        key="home"
+                        classNames="fadelink"
+                        timeout={{
+                          appear: FADE_DURATION.appear,
+                          enter: FADE_DURATION.enter,
+                          exit: FADE_DURATION.exit,
+                        }}
+                        appear
+                      >
+                        <li className="nav-item" style={{ transitionDelay: "0ms" }}>
+                          <Link
+                            className="nav-logo"
+                            to="/"
+                            aria-label="Home"
+                            onClick={(e) => {
+                              if (window.location.pathname === "/") {
+                                e.preventDefault();
+                                window.scrollTo({ top: 0, behavior: "smooth" });
+                              }
+                              (e.currentTarget as HTMLElement).blur();
+                            }}
+                          >
+                            PP
+                          </Link>
+                        </li>
+                      </CSSTransition>
+                    )}
                     {mounted &&
-                      [
-                        // 1) normal links first…
-                        ...DEFAULT_LINKS.map(({ url, name }) => ({
-                          kind: "link" as const,
-                          url,
-                          name,
-                        })),
-                        // 2) then a synthetic "resume" item so it animates last
-                        { kind: "resume" as const, name: "Resume" },
-                      ].map((item, i) => (
+                      DEFAULT_LINKS.map((item, i) => (
                         <CSSTransition
-                          key={item.kind === "link" ? item.name : "resume"}
+                          key={item.name}
                           classNames="fadelink"
                           timeout={{
                             appear: FADE_DURATION.appear,
@@ -100,40 +119,33 @@ export const Nav: React.FC = () => {
                           <li
                             className="nav-item"
                             style={{
-                              transitionDelay: `${i * LINK_STAGGER_MS}ms`,
-                            }} // resume gets the last delay
+                              transitionDelay: `${(i + 1) * LINK_STAGGER_MS}ms`,
+                            }}
                           >
-                            {item.kind === "link" ? (
-                              item.url.startsWith("#") ? (
-                                <a
-                                  className="nav-link"
-                                  href={item.url}
-                                  onClick={(e) => {
+                            {item.url.startsWith("#") ? (
+                              <a
+                                className="nav-link"
+                                href={`/${item.url}`}
+                                onClick={(e) => {
+                                  // If we're on the homepage, smooth-scroll
+                                  if (window.location.pathname === "/") {
                                     e.preventDefault();
                                     const isMobile = window.innerWidth <= 640;
                                     const id = item.url === "#contact" && isMobile
                                       ? "contact-hero"
                                       : item.url.slice(1);
                                     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-                                  }}
-                                >
-                                  {item.name}
-                                </a>
-                              ) : (
-                                <Link className="nav-link" to={item.url}>
-                                  {item.name}
-                                </Link>
-                              )
-                            ) : (
-                              <a
-                                className="resume-link"
-                                href={RESUME_HREF}
-                                target="_blank"
-                                rel="nofollow noopener noreferrer"
-                                // (no extra delay here — it already uses i * 300ms)
+                                  }
+                                  // Remove focus so the link doesn't stay highlighted
+                                  (e.currentTarget as HTMLElement).blur();
+                                }}
                               >
-                                Resume
+                                {item.name}
                               </a>
+                            ) : (
+                              <Link className="nav-link nav-link--emphasis" to={item.url}>
+                                {item.name}
+                              </Link>
                             )}
                           </li>
                         </CSSTransition>
@@ -177,7 +189,6 @@ export const Nav: React.FC = () => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         links={DEFAULT_LINKS}
-        resumeHref={RESUME_HREF}
       />
     </>
   );

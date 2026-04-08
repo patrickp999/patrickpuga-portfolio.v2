@@ -37,15 +37,31 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* was space-between */
+  justify-content: flex-end;
 }
 
 .nav-logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  color: var(--text);
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+  font-family: var(--font-mono, ui-monospace);
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0;
+  padding: 0;
+  opacity: 1;
+  line-height: 1;
+}
+.nav-logo:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .nav-right {
@@ -82,22 +98,23 @@
   opacity: 0.9;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
-.nav-link:hover,
-.nav-link:focus {
-  color: var(--primary);
+.nav-link:hover {
+  color: var(--accent);
   opacity: 1;
-  outline: 0;
 }
 
-.resume-link {
-  display: inline-flex;
-  align-items: center;
-  font-size: 14px;
-  padding: 8px 12px;
-  border: 1px solid var(--primary);
-  color: var(--primary);
-  border-radius: 3px;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+/* Emphasized nav link (Blog) — bordered pill */
+.nav-link--emphasis {
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 4px;
+  opacity: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-link--emphasis:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
 }
 
 /* Hamburger (mobile only) */
@@ -121,7 +138,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--primary);
+  background: var(--accent);
   border-radius: 4px;
   transition: transform 0.2s ease, width 0.2s ease, opacity 0.2s ease,
     top 0.2s ease, bottom 0.2s ease;

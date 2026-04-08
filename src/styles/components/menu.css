@@ -5,6 +5,8 @@
   backdrop-filter: blur(3px);
   display: none;
   z-index: 40;
+  pointer-events: auto;
+  filter: none;
 }
 .menu-overlay.open {
   display: block;
@@ -23,30 +25,47 @@
   z-index: 45;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  filter: none;
 }
 .menu-drawer.open {
   transform: translateX(0);
 }
 
-.menu-head {
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--border);
-}
 .menu-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   padding: 16px;
-  display: grid;
-  gap: 8px;
 }
+
 .menu-link {
   display: block;
-  padding: 12px 10px;
+  padding: 12px 16px;
   border-radius: 8px;
   color: var(--text);
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 .menu-link:hover {
+  color: var(--accent);
+}
+
+/* Emphasized link (Blog) — bordered pill like the old Resume button */
+.menu-link--emphasis {
+  margin-top: 8px;
+  padding: 10px 24px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 16px;
+}
+.menu-link--emphasis:hover {
   background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
 }
