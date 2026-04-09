@@ -1,6 +1,6 @@
 import * as React from "react";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import type { Document } from "@contentful/rich-text-types";
+import { GatsbyImage } from "gatsby-plugin-image";
+import type { IGatsbyImageData } from "gatsby-plugin-image";
 
 import { useFadeIn } from "../utils/useFadeIn";
 
@@ -8,8 +8,12 @@ type ExperienceCardProps = {
   company: string;
   title: string;
   dateRange: string;
-  description: string | null;
-  companyUrl?: string | null;
+  blurb: string | null;
+  technologies: string[];
+  tags: string[];
+  logo: IGatsbyImageData | null;
+  companyUrl: string | null;
+  companyUrlText: string | null;
   index: number;
 };
 
@@ -24,56 +28,83 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
   company,
   title,
   dateRange,
-  description,
+  blurb,
+  technologies,
+  tags,
+  logo,
   companyUrl,
+  companyUrlText,
   index,
 }) => {
-  const ref = useFadeIn<HTMLDivElement>({ delay: index * 100 });
+  const ref = useFadeIn<HTMLElement>({ delay: index * 100 });
   const initials = getInitials(company);
+  const linkText = companyUrlText?.trim() || company;
 
-  let descriptionContent: Document | null = null;
-  if (description) {
-    try {
-      descriptionContent = JSON.parse(description) as Document;
-    } catch {
-      descriptionContent = null;
-    }
-  }
-
-  return (
-    <div className="exp-card fade-in" ref={ref}>
+  const cardContent = (
+    <>
       <div className="exp-card-header">
-        <div className="exp-card-initials" aria-hidden="true">
-          {initials}
-        </div>
+        {logo ? (
+          <GatsbyImage
+            image={logo}
+            alt={`${company} logo`}
+            className="exp-card-logo"
+          />
+        ) : (
+          <div className="exp-card-initials" aria-hidden="true">
+            {initials}
+          </div>
+        )}
         <div className="exp-card-meta">
           <h3 className="exp-card-title">
             {title}
             {company && (
               <span className="exp-card-company">
-                &nbsp;@&nbsp;
-                {companyUrl ? (
-                  <a
-                    href={companyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {company}
-                  </a>
-                ) : (
-                  <span>{company}</span>
-                )}
+                &nbsp;@&nbsp;{linkText}
               </span>
             )}
           </h3>
           <p className="exp-card-date">{dateRange}</p>
         </div>
       </div>
-      {descriptionContent && (
-        <div className="exp-card-description">
-          {documentToReactComponents(descriptionContent)}
-        </div>
+
+      {blurb && <p className="exp-card-blurb">{blurb}</p>}
+
+      {technologies.length > 0 && (
+        <ul className="exp-card-technologies" aria-label="Technologies used">
+          {technologies.map((tech) => (
+            <li key={tech} className="exp-card-tech-tag">
+              {tech}
+            </li>
+          ))}
+        </ul>
       )}
+
+      {tags.length > 0 && (
+        <ul className="exp-card-tags" aria-label="Tags">
+          {tags.map((tag) => (
+            <li key={tag} className="exp-card-tag">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+
+  return companyUrl ? (
+    <a
+      href={companyUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="exp-card exp-card-link fade-in"
+      ref={ref as React.RefObject<HTMLAnchorElement>}
+      aria-label={`${title} at ${company}`}
+    >
+      {cardContent}
+    </a>
+  ) : (
+    <div className="exp-card fade-in" ref={ref as React.RefObject<HTMLDivElement>}>
+      {cardContent}
     </div>
   );
 };

@@ -99,7 +99,26 @@ export const Nav: React.FC = () => {
                               (e.currentTarget as HTMLElement).blur();
                             }}
                           >
-                            PP
+                            <svg
+                              width="34"
+                              height="34"
+                              viewBox="0 0 80 80"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <rect width="80" height="80" rx="14" fill="transparent" />
+                              <text
+                                x="40"
+                                y="56"
+                                textAnchor="middle"
+                                fontFamily="system-ui, -apple-system, sans-serif"
+                                fontWeight="700"
+                                fontSize="46"
+                                fill="var(--accent)"
+                              >
+                                P
+                              </text>
+                            </svg>
                           </Link>
                         </li>
                       </CSSTransition>

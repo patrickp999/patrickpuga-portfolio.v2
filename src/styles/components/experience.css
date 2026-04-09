@@ -32,13 +32,32 @@
   border-radius: var(--radius);
   padding: 24px;
   margin-bottom: 24px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exp-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.exp-card-link:hover,
+.exp-card-link:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.exp-card-link:focus:not(:focus-visible) {
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 .exp-card:last-child {
   margin-bottom: 0;
 }
 
-/* Card header: initials on left, meta on right */
+/* Card header: logo/initials on left, meta on right */
 .exp-card-header {
   display: flex;
   flex-direction: row;
@@ -47,12 +66,22 @@
   margin-bottom: 16px;
 }
 
-/* Company initials circle */
+/* Company logo image */
+.exp-card-logo {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+}
+
+/* Company initials box (fallback when no logo) */
 .exp-card-initials {
   width: 48px;
   height: 48px;
   min-width: 48px;
-  border-radius: 50%;
+  border-radius: 8px;
   border: 2px solid var(--accent);
   display: flex;
   align-items: center;
@@ -86,36 +115,50 @@
   color: var(--muted);
 }
 
-/* Card description */
-.exp-card-description {
+/* Blurb paragraph */
+.exp-card-blurb {
+  margin: 0 0 16px 0;
   color: var(--text);
   line-height: 1.6;
 }
 
-.exp-card-description ul {
+/* Technology pills */
+.exp-card-technologies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exp-card-tech-tag {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: var(--font-mono, ui-monospace);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Tags */
+.exp-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.exp-card-description li {
-  position: relative;
-  margin-bottom: 10px;
-  padding-left: 20px;
-}
-
-.exp-card-description li::before {
-  content: "▹";
-  position: absolute;
-  left: 0;
-  top: 2px;
-  color: var(--accent);
-  font-size: 12px;
-  line-height: 12px;
-}
-
-.exp-card-description p {
-  margin-bottom: 12px;
+.exp-card-tag {
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 .experience-empty {

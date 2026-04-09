@@ -7,7 +7,7 @@ import { Seo } from "../components/seo";
 
 const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
-  const workHistoryNodes = data.allContentfulJob.nodes;
+  const workHistoryNodes = data.allContentfulExperienceRole.nodes;
 
   return (
     <Layout>
@@ -57,19 +57,27 @@ export const pageQuery = graphql`
       }
     }
 
-    allContentfulJob(sort: { order: ASC }) {
+    allContentfulExperienceRole(sort: { order: ASC }) {
       nodes {
-        date
         order
         company
-        dateRange
         title
-        location
-        url {
-          raw
+        dateRange
+        blurb {
+          blurb
         }
-        description {
-          raw
+        technologies
+        tags
+        companyUrl
+        companyUrlText
+        logo {
+          gatsbyImageData(
+            layout: CONSTRAINED
+            width: 48
+            height: 48
+            placeholder: BLURRED
+            formats: [AUTO, WEBP, AVIF]
+          )
         }
       }
     }

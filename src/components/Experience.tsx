@@ -6,30 +6,10 @@ import { useFadeIn } from "../utils/useFadeIn";
 import "../styles/components/experience.css";
 
 type WorkHistoryNode =
-  Queries.IndexPageQuery["allContentfulJob"]["nodes"][number];
+  Queries.IndexPageQuery["allContentfulExperienceRole"]["nodes"][number];
 
 type ExperienceProps = {
   data?: WorkHistoryNode[] | null;
-};
-
-const getCompanyUrl = (raw?: string | null): string | null => {
-  if (!raw) return null;
-
-  try {
-    const document = JSON.parse(raw) as {
-      content?: Array<{
-        content?: Array<{
-          data?: {
-            uri?: string;
-          };
-        }>;
-      }>;
-    };
-
-    return document.content?.[0]?.content?.[1]?.data?.uri ?? null;
-  } catch {
-    return null;
-  }
 };
 
 const Experience: React.FC<ExperienceProps> = ({ data }) => {
@@ -73,7 +53,6 @@ const Experience: React.FC<ExperienceProps> = ({ data }) => {
         const company = job.company?.trim() || "";
         const title = job.title?.trim() || "";
         const dateRange = job.dateRange?.trim() || "";
-        const companyUrl = getCompanyUrl(job.url?.raw);
 
         return (
           <ExperienceCard
@@ -81,8 +60,12 @@ const Experience: React.FC<ExperienceProps> = ({ data }) => {
             company={company}
             title={title}
             dateRange={dateRange}
-            description={job.description?.raw ?? null}
-            companyUrl={companyUrl}
+            blurb={job.blurb?.blurb ?? null}
+            technologies={[...(job.technologies?.filter(Boolean) ?? [])] as string[]}
+            tags={[...(job.tags?.filter(Boolean) ?? [])] as string[]}
+            logo={job.logo?.gatsbyImageData ?? null}
+            companyUrl={job.companyUrl ?? null}
+            companyUrlText={job.companyUrlText ?? null}
             index={index}
           />
         );
