@@ -33,7 +33,7 @@ const config: GatsbyConfig = {
         background_color: `#ffffff`,
         theme_color: `#000000`,
         display: `standalone`,
-        icon: `src/images/favicon.png`, // Path to your favicon file
+        icon: `src/images/favicon.svg`, // Path to your favicon file
       },
     },
     "gatsby-plugin-image",

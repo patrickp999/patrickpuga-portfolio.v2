@@ -7,14 +7,7 @@ import { Seo } from "../components/seo";
 
 const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
-  const aboutNode = data.about.nodes[0];
   const workHistoryNodes = data.allContentfulJob.nodes;
-
-  const skills: string[] = Array.isArray(aboutNode?.skills)
-    ? Array.from(aboutNode.skills)
-        .filter((s): s is string => typeof s === "string" && s.trim().length > 0)
-        .map((s) => s.trim())
-    : [];
 
   return (
     <Layout>
@@ -24,10 +17,8 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
             ? {
                 name: heroNode.name ?? "",
                 subtitle: heroNode.subtitle ?? "",
-                blurb: heroNode.blurb ?? "",
-                avatar: aboutNode?.avatar?.gatsbyImageData,
-                bio: aboutNode?.description?.raw,
-                tags: skills,
+                avatar: heroNode.avatar?.gatsbyImageData,
+                intro: heroNode.intro?.raw,
               }
             : undefined
         }
@@ -48,19 +39,13 @@ export const Head = () => <Seo title="Software Engineer" />;
 
 export const pageQuery = graphql`
   query IndexPage {
-    hero: allContentfulHero {
+    hero: allContentfulPortfolioHero(limit: 1) {
       nodes {
-        greeting
-        blurb
         name
         subtitle
-      }
-    }
-
-    about: allContentfulAbout(limit: 1) {
-      nodes {
-        title
-        skills
+        intro {
+          raw
+        }
         avatar {
           gatsbyImageData(
             layout: CONSTRAINED
@@ -68,11 +53,6 @@ export const pageQuery = graphql`
             placeholder: BLURRED
             formats: [AUTO, WEBP, AVIF]
           )
-          title
-          description
-        }
-        description {
-          raw
         }
       }
     }

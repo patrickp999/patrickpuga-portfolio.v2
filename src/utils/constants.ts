@@ -73,8 +73,5 @@ export const getFadeDuration = (viewportWidth?: number) => {
 export const HERO_FALLBACK: HeroContent = {
   name: "Patrick Puga",
   subtitle: "Sr. Software Engineer",
-  blurb:
-    "I'm a skilled software engineer based in Denver, Colorado. I have a passion for technology and expertise building exceptional, secure, and highly scalable websites and applications.",
-  bio: "",
-  tags: [],
+  intro: "",
 };

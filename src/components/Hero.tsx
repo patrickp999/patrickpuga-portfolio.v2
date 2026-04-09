@@ -3,6 +3,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import type { IGatsbyImageData } from "gatsby-plugin-image";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import { MARKS } from "@contentful/rich-text-types";
 
 import "../styles/components/hero.css";
 import {
@@ -12,12 +13,9 @@ import {
 } from "../utils/constants";
 
 export type HeroContent = {
-  greeting?: string;
   name: string;
   subtitle: string;
-  blurb: string;
-  bio?: string | null;
-  tags?: string[];
+  intro?: string | null;
   avatar?: IGatsbyImageData | any;
 };
 
@@ -34,7 +32,14 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
   const baseDelay = computeHeroBaseDelay(viewportWidth);
 
   const image = getImage(content.avatar || null);
-  const tags = content.tags ?? [];
+
+  const richTextOptions = {
+    renderMark: {
+      [MARKS.BOLD]: (text: React.ReactNode) => (
+        <span className="hero-highlight">{text}</span>
+      ),
+    },
+  };
 
   React.useEffect(() => {
     setViewportWidth(window.innerWidth);
@@ -77,38 +82,15 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     >
       {content.subtitle}
     </h2>,
-    ...(content.bio
+    ...(content.intro
       ? [
           <div
-            key="bio"
+            key="intro"
             className="hero-bio"
             style={{ transitionDelay: `${baseDelay + (image ? 500 : 400)}ms` }}
           >
-            {documentToReactComponents(JSON.parse(content.bio))}
+            {documentToReactComponents(JSON.parse(content.intro), richTextOptions)}
           </div>,
-        ]
-      : [
-          <p
-            key="blurb"
-            className="hero-blurb"
-            style={{ transitionDelay: `${baseDelay + (image ? 500 : 400)}ms` }}
-          >
-            {content.blurb}
-          </p>,
-        ]),
-    ...(tags.length > 0
-      ? [
-          <ul
-            key="tags"
-            className="hero-tags"
-            style={{ transitionDelay: `${baseDelay + (image ? 600 : 500)}ms` }}
-          >
-            {tags.map((tag, idx) => (
-              <li key={`${tag}-${idx}`} className="hero-tag">
-                {tag}
-              </li>
-            ))}
-          </ul>,
         ]
       : []),
   ];

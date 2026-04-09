@@ -34,7 +34,7 @@
 
 .hero-avatar {
   width: 200px;
-  border-radius: 50%;
+  border-radius: 32px;
   filter: grayscale(100%) contrast(1);
 }
 
@@ -44,7 +44,7 @@
   line-height: 1.1;
   font-weight: 800;
   color: var(--text);
-  font-size: clamp(40px, 8vw, 80px);
+  font-size: clamp(36px, 6vw, 60px);
 
   /* Prevent long names from forcing horizontal scroll */
   overflow-wrap: anywhere;
@@ -76,7 +76,7 @@
   margin: 0 0 20px 0;
   line-height: 1.1;
   color: var(--accent);
-  font-size: clamp(30px, 6vw, 70px);
+  font-size: clamp(26px, 4.5vw, 48px);
   font-weight: 700;
   letter-spacing: 0.2px;
 
@@ -109,6 +109,17 @@
 
 .hero-bio p:last-child {
   margin-bottom: 0;
+}
+
+.hero-bio b,
+.hero-bio strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hero-highlight {
+  color: #7DD3FC;
+  font-weight: 700;
 }
 
 /* ---------- Tag pills ---------- */
