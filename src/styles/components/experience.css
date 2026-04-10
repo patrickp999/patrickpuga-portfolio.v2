@@ -74,6 +74,11 @@
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid var(--accent);
+  background: #000;
+}
+
+.exp-card-logo img {
+  object-fit: contain;
 }
 
 /* Company initials box (fallback when no logo) */
@@ -106,6 +111,11 @@
 
 .exp-card-company {
   color: var(--accent);
+}
+
+.exp-card-company-sub {
+  color: var(--muted);
+  font-weight: 400;
 }
 
 .exp-card-date {

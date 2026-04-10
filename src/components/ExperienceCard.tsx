@@ -33,12 +33,11 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
   tags,
   logo,
   companyUrl,
-  companyUrlText,
+  companyUrlText: _companyUrlText,
   index,
 }) => {
   const ref = useFadeIn<HTMLElement>({ delay: index * 100 });
   const initials = getInitials(company);
-  const linkText = companyUrlText?.trim() || company;
 
   const cardContent = (
     <>
@@ -48,6 +47,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
             image={logo}
             alt={`${company} logo`}
             className="exp-card-logo"
+            objectFit="contain"
           />
         ) : (
           <div className="exp-card-initials" aria-hidden="true">
@@ -59,7 +59,13 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
             {title}
             {company && (
               <span className="exp-card-company">
-                &nbsp;@&nbsp;{linkText}
+                &nbsp;@&nbsp;
+                {company.replace(/\s*(\(.*?\))/, "")}
+                {company.match(/\s*(\(.*?\))/) && (
+                  <span className="exp-card-company-sub">
+                    {" "}{company.match(/\s*(\(.*?\))/)![1]}
+                  </span>
+                )}
               </span>
             )}
           </h3>

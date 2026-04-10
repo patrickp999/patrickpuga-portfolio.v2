@@ -8,6 +8,7 @@ import { Seo } from "../components/seo";
 const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
   const workHistoryNodes = data.allContentfulExperienceRole.nodes;
+  const projectNodes = data.allContentfulProject.nodes;
 
   return (
     <Layout>
@@ -26,7 +27,7 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
 
       <Experience data={[...workHistoryNodes]} />
 
-      <Projects />
+      <Projects data={[...projectNodes]} />
 
       <Contact />
     </Layout>
@@ -75,6 +76,27 @@ export const pageQuery = graphql`
             layout: CONSTRAINED
             width: 48
             height: 48
+            placeholder: BLURRED
+            formats: [AUTO, WEBP, AVIF]
+          )
+        }
+      }
+    }
+
+    allContentfulProject(sort: { order: ASC }) {
+      nodes {
+        name
+        description {
+          description
+        }
+        tags
+        githubUrl
+        liveUrl
+        order
+        thumbnail {
+          gatsbyImageData(
+            layout: CONSTRAINED
+            width: 600
             placeholder: BLURRED
             formats: [AUTO, WEBP, AVIF]
           )

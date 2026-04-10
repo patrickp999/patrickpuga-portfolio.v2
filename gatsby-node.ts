@@ -12,6 +12,9 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
       type ContentfulBlogPostBody {
         raw: String
       }
+      type ContentfulProject implements Node {
+        liveUrl: String
+      }
     `);
   };
 

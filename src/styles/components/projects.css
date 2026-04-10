@@ -38,17 +38,34 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Gradient thumbnail */
 .project-card-thumbnail {
   height: 140px;
   border-radius: var(--radius) var(--radius) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Image inside thumbnail — smaller with faded edges */
+.project-card-thumbnail-image {
+  width: 75%;
+  height: 100%;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
 /* Card body */
 .project-card-body {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .project-card-name {
@@ -63,6 +80,7 @@
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
+  flex: 1;
 }
 
 /* Tag pills */
@@ -86,7 +104,12 @@
   white-space: nowrap;
 }
 
-/* GitHub link */
+/* Card links */
+.project-card-links {
+  display: flex;
+  gap: 12px;
+}
+
 .project-card-github {
   display: inline-flex;
   color: var(--muted);

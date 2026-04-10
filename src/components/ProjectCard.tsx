@@ -1,17 +1,19 @@
 import * as React from "react";
-import { FaGithub } from "react-icons/fa";
+import { GatsbyImage } from "gatsby-plugin-image";
+import type { IGatsbyImageData } from "gatsby-plugin-image";
+import { FaGithub, FaLink } from "react-icons/fa";
 
 import { useFadeIn } from "../utils/useFadeIn";
 
-export type ProjectData = {
+const THUMBNAIL_BG = "#1E1B4B";
+
+type ProjectCardProps = {
   name: string;
   description: string;
   tags: string[];
   githubUrl: string;
-  gradient: string;
-};
-
-type ProjectCardProps = ProjectData & {
+  liveUrl?: string | null;
+  thumbnail?: IGatsbyImageData | null;
   index: number;
 };
 
@@ -20,18 +22,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   description,
   tags,
   githubUrl,
-  gradient,
+  liveUrl,
+  thumbnail,
   index,
 }) => {
   const ref = useFadeIn<HTMLDivElement>({ delay: index * 100 });
 
   return (
     <div className="project-card fade-in" ref={ref}>
-      <div
-        className="project-card-thumbnail"
-        style={{ background: gradient }}
-        aria-hidden="true"
-      />
+      {thumbnail ? (
+        <div
+          className="project-card-thumbnail"
+          style={{ background: THUMBNAIL_BG }}
+        >
+          <GatsbyImage
+            image={thumbnail}
+            alt={`${name} thumbnail`}
+            className="project-card-thumbnail-image"
+          />
+        </div>
+      ) : (
+        <div
+          className="project-card-thumbnail"
+          style={{ background: THUMBNAIL_BG }}
+          aria-hidden="true"
+        />
+      )}
       <div className="project-card-body">
         <h3 className="project-card-name">{name}</h3>
         <p className="project-card-description">{description}</p>
@@ -44,15 +60,28 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             ))}
           </ul>
         )}
-        <a
-          href={githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="project-card-github"
-          aria-label={`${name} on GitHub`}
-        >
-          <FaGithub size={20} />
-        </a>
+        <div className="project-card-links">
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="project-card-github"
+            aria-label={`${name} on GitHub`}
+          >
+            <FaGithub size={20} />
+          </a>
+          {liveUrl && (
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-card-github"
+              aria-label={`${name} live demo`}
+            >
+              <FaLink size={18} />
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -16,13 +16,3 @@
 .footer-separator {
   color: var(--border);
 }
-
-.footer-resume {
-  color: var(--muted);
-  transition: color 0.2s ease;
-}
-
-.footer-resume:hover,
-.footer-resume:focus {
-  color: var(--accent);
-}
