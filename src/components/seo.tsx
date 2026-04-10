@@ -26,6 +26,16 @@ export const Seo: React.FC<Props> = ({ title, description, pathname }) => {
       <meta name="description" content={description ?? meta.description} />
       <link rel="canonical" href={url} />
       <meta name="theme-color" content="#0F172A" />
+      <meta name="robots" content="index, follow" />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={description ?? meta.description} />
+      <meta property="og:image" content={`${meta.siteUrl}/og-image.png`} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={description ?? meta.description} />
+      <meta name="twitter:image" content={`${meta.siteUrl}/og-image.png`} />
     </>
   );
 };
