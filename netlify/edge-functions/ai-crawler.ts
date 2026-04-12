@@ -75,13 +75,16 @@ export default async function handler(
     return undefined;
   }
 
-  // Umami analytics — fire-and-forget AI crawler event
+  // Umami analytics — track AI crawler event before responding
   const umamiUrl = Deno.env.get("UMAMI_URL");
   const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
   if (umamiUrl && umamiWebsiteId) {
-    fetch(`${umamiUrl}/api/send`, {
+    await fetch(`${umamiUrl}/api/send`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "ai-crawler-geo",
+      },
       body: JSON.stringify({
         type: "event",
         payload: {
