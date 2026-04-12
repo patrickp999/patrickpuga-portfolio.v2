@@ -91,7 +91,11 @@ export default async function handler(
           website: umamiWebsiteId,
           hostname: "www.patrickpuga.com",
           url: pathname,
+          title: "AI Crawler",
           name: "ai-crawler",
+          language: "en-US",
+          referrer: "",
+          screen: "1920x1080",
           data: {
             bot: request.headers.get("User-Agent") ?? "unknown",
             triggeredBy: detection.triggeredBy,
