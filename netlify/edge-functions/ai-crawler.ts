@@ -79,30 +79,37 @@ export default async function handler(
   const umamiUrl = Deno.env.get("UMAMI_URL");
   const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
   if (umamiUrl && umamiWebsiteId) {
-    await fetch(`${umamiUrl}/api/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; ai-crawler-geo/1.0)",
-      },
-      body: JSON.stringify({
-        type: "event",
-        payload: {
-          website: umamiWebsiteId,
-          hostname: "www.patrickpuga.com",
-          url: pathname,
-          title: "AI Crawler",
-          name: "ai-crawler",
-          language: "en-US",
-          referrer: "",
-          screen: "1920x1080",
-          data: {
-            bot: request.headers.get("User-Agent") ?? "unknown",
-            triggeredBy: detection.triggeredBy,
-          },
+    try {
+      const umamiRes = await fetch(`${umamiUrl}/api/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "Mozilla/5.0 (compatible; ai-crawler-geo/1.0)",
         },
-      }),
-    }).catch(() => {});
+        body: JSON.stringify({
+          type: "event",
+          payload: {
+            website: umamiWebsiteId,
+            hostname: "www.patrickpuga.com",
+            url: pathname,
+            title: "AI Crawler",
+            name: "ai-crawler",
+            language: "en-US",
+            referrer: "",
+            screen: "1920x1080",
+            data: {
+              bot: request.headers.get("User-Agent") ?? "unknown",
+              triggeredBy: detection.triggeredBy,
+            },
+          },
+        }),
+      });
+      const umamiBody = await umamiRes.text();
+      console.log("Umami response status:", umamiRes.status);
+      console.log("Umami response body:", umamiBody);
+    } catch (err) {
+      console.error("Umami fetch error:", err);
+    }
   }
 
   // Map request path to corresponding .txt file and fetch it
