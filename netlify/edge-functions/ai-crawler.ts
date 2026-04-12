@@ -78,33 +78,24 @@ export default async function handler(
   // Umami analytics — fire-and-forget AI crawler event
   const umamiUrl = Deno.env.get("UMAMI_URL");
   const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
-  console.log("[ai-crawler] UMAMI_URL:", umamiUrl ?? "(not set)");
-  console.log("[ai-crawler] UMAMI_WEBSITE_ID:", umamiWebsiteId ?? "(not set)");
   if (umamiUrl && umamiWebsiteId) {
-    const umamiEndpoint = `${umamiUrl}/api/send`;
-    const umamiPayload = {
-      type: "event",
-      payload: {
-        website: umamiWebsiteId,
-        url: pathname,
-        name: "ai-crawler",
-        data: {
-          bot: request.headers.get("User-Agent") ?? "unknown",
-          triggeredBy: detection.triggeredBy,
-        },
-      },
-    };
-    console.log("[ai-crawler] Fetching:", umamiEndpoint);
-    console.log("[ai-crawler] Payload:", JSON.stringify(umamiPayload));
-    fetch(umamiEndpoint, {
+    fetch(`${umamiUrl}/api/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(umamiPayload),
-    })
-      .then((res) => console.log("[ai-crawler] Umami response status:", res.status))
-      .catch((err) => console.error("[ai-crawler] Umami fetch error:", err));
-  } else {
-    console.log("[ai-crawler] Skipping Umami — env vars missing");
+      body: JSON.stringify({
+        type: "event",
+        payload: {
+          website: umamiWebsiteId,
+          hostname: "www.patrickpuga.com",
+          url: pathname,
+          name: "ai-crawler",
+          data: {
+            bot: request.headers.get("User-Agent") ?? "unknown",
+            triggeredBy: detection.triggeredBy,
+          },
+        },
+      }),
+    }).catch(() => {});
   }
 
   // Map request path to corresponding .txt file and fetch it
