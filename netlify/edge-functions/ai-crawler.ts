@@ -13,7 +13,7 @@ export function isStaticAsset(pathname: string): boolean {
   return STATIC_EXTENSIONS.some((ext) => lower.endsWith(ext));
 }
 
-export type TriggerSignal = 'ua' | 'accept-language' | 'both';
+export type TriggerSignal = 'both';
 
 export interface DetectionResult {
   isCrawler: boolean;
@@ -36,14 +36,9 @@ export function detectAICrawler(
   const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
   const langAbsent = acceptLanguage === null;
 
+  // Conservative: require BOTH signals to match
   if (uaMatch && langAbsent) {
     return { isCrawler: true, triggeredBy: 'both' };
-  }
-  if (uaMatch) {
-    return { isCrawler: true, triggeredBy: 'ua' };
-  }
-  if (langAbsent) {
-    return { isCrawler: true, triggeredBy: 'accept-language' };
   }
   return { isCrawler: false, triggeredBy: null };
 }
