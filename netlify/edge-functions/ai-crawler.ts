@@ -83,7 +83,7 @@ export default async function handler(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "ai-crawler-geo",
+        "User-Agent": "Mozilla/5.0 (compatible; ai-crawler-geo/1.0)",
       },
       body: JSON.stringify({
         type: "event",
