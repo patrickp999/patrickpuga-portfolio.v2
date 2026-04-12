@@ -76,15 +76,15 @@ export default async function handler(
   }
 
   // Umami analytics — track AI crawler event before responding
-  const umamiUrl = Deno.env.get("UMAMI_URL");
-  const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
+  const umamiUrl = "https://umami-production-1099.up.railway.app";
+  const umamiWebsiteId = "8881017b-fb72-41ad-ba87-7a7cbad7d93c";
   if (umamiUrl && umamiWebsiteId) {
     try {
       const umamiRes = await fetch(`${umamiUrl}/api/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "Mozilla/5.0 (compatible; ai-crawler-geo/1.0)",
+          "User-Agent": request.headers.get("User-Agent") ?? "Mozilla/5.0",
         },
         body: JSON.stringify({
           type: "event",
