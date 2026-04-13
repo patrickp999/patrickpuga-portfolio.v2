@@ -1,4 +1,4 @@
-import type { Config, Context } from "@netlify/edge-functions";
+import type { Context } from "@netlify/edge-functions";
 
 declare const Deno: { env: { get(key: string): string | undefined } };
 
@@ -116,4 +116,8 @@ export default async function handler(
   });
 }
 
-export const config: Config = { path: "/*" };
+// Config removed — this function is not active.
+// Re-enable by adding to netlify.toml:
+//   [[edge_functions]]
+//     function = "ai-crawler"
+//     path = "/*"
