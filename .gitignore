@@ -9,3 +9,9 @@ gatsby-types.d.ts
 # Kiro
 .kiro/settings/
 .kiro/hooks/
+# Local Netlify folder
+.netlify
+
+# Netlify dev artifacts
+_redirects
+deno.lock
