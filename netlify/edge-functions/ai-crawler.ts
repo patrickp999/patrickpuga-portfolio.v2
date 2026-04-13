@@ -22,10 +22,8 @@ export interface DetectionResult {
 
 const AI_CRAWLER_UAS = [
   'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',
-  'Google-Extended', 'Claude-Web', 'ClaudeBot',
-  'anthropic-ai', 'Bytespider', 'CCBot',
-  'PerplexityBot', 'Amazonbot', 'FacebookBot',
-  'Applebot-Extended', 'cohere-ai', 'DiffBot',
+  'ClaudeBot', 'Claude-Web', 'anthropic-ai',
+  'PerplexityBot', 'cohere-ai', 'CCBot',
 ] as const;
 
 export function detectAICrawler(
