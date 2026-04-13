@@ -1,5 +1,5 @@
 import type { Config, Context } from "@netlify/edge-functions";
-import { isStaticAsset, detectAICrawler, mapPathToTextFile } from "./lib/crawler-utils.ts";
+import { isStaticAsset, detectAICrawler } from "./lib/crawler-utils.ts";
 
 declare const Deno: { env: { get(key: string): string | undefined } };
 
@@ -24,7 +24,7 @@ export default async function handler(
     return undefined;
   }
 
-  // Umami analytics — track AI crawler event before responding
+  // Umami analytics — track AI crawler hit, then pass through
   const umamiUrl = Deno.env.get("UMAMI_URL");
   const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
   if (umamiUrl && umamiWebsiteId) {
@@ -58,21 +58,8 @@ export default async function handler(
     }
   }
 
-  // Map request path to corresponding .txt file and fetch it
-  const textFilePath = mapPathToTextFile(pathname);
-  const textFileUrl = new URL(textFilePath, request.url);
-  const textResponse = await fetch(textFileUrl);
-
-  if (!textResponse.ok) {
-    return undefined;
-  }
-
-  return new Response(textResponse.body, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "X-Served-For": "ai-crawler",
-    },
-  });
+  // Always pass through — no content rewriting
+  return undefined;
 }
 
 export const config: Config = { path: "/*" };
