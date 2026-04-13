@@ -13,7 +13,7 @@ export function isStaticAsset(pathname: string): boolean {
   return STATIC_EXTENSIONS.some((ext) => lower.endsWith(ext));
 }
 
-export type TriggerSignal = 'ua' | 'accept-language' | 'both';
+export type TriggerSignal = 'both';
 
 export interface DetectionResult {
   isCrawler: boolean;
@@ -22,10 +22,8 @@ export interface DetectionResult {
 
 const AI_CRAWLER_UAS = [
   'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',
-  'Google-Extended', 'Claude-Web', 'ClaudeBot',
-  'anthropic-ai', 'Bytespider', 'CCBot',
-  'PerplexityBot', 'Amazonbot', 'FacebookBot',
-  'Applebot-Extended', 'cohere-ai', 'DiffBot',
+  'ClaudeBot', 'Claude-Web', 'anthropic-ai',
+  'PerplexityBot', 'cohere-ai', 'CCBot',
 ] as const;
 
 export function detectAICrawler(
@@ -36,14 +34,9 @@ export function detectAICrawler(
   const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
   const langAbsent = acceptLanguage === null;
 
+  // Conservative: require BOTH signals to match
   if (uaMatch && langAbsent) {
     return { isCrawler: true, triggeredBy: 'both' };
-  }
-  if (uaMatch) {
-    return { isCrawler: true, triggeredBy: 'ua' };
-  }
-  if (langAbsent) {
-    return { isCrawler: true, triggeredBy: 'accept-language' };
   }
   return { isCrawler: false, triggeredBy: null };
 }
