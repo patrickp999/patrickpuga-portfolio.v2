@@ -36,10 +36,13 @@ export default async function handler(
     const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
     const langAbsent = lang === null;
 
-    // Conservative: require BOTH signals
-    if (!uaMatch || !langAbsent) {
+    // Single-signal: trigger if EITHER signal matches
+    if (!uaMatch && !langAbsent) {
       return undefined;
     }
+
+    const triggeredBy = uaMatch && langAbsent ? 'both' : uaMatch ? 'ua' : 'accept-language';
+    const matchedAs = AI_CRAWLER_UAS.find((id) => uaLower.includes(id.toLowerCase())) ?? 'unknown';
 
     // Umami analytics — track AI crawler hit
     const umamiUrl = Deno.env.get("UMAMI_URL");
@@ -64,7 +67,8 @@ export default async function handler(
             screen: "1920x1080",
             data: {
               bot: ua ?? "unknown",
-              triggeredBy: "both",
+              matchedAs,
+              triggeredBy,
             },
           },
         }),
