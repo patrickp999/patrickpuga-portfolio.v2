@@ -1,4 +1,3 @@
-# Edge functions disabled — investigating 502 error
-# [[edge_functions]]
-#   function = "ai-analytics"
-#   path = "/*"
+[[edge_functions]]
+  function = "ai-analytics"
+  path = "/*"
