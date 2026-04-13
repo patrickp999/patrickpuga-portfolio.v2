@@ -8,18 +8,6 @@ const STATIC_EXTENSIONS = [
   '.webp', '.avif', '.json', '.xml', '.webmanifest',
 ] as const;
 
-function isStaticAsset(pathname: string): boolean {
-  const lower = pathname.toLowerCase();
-  return STATIC_EXTENSIONS.some((ext) => lower.endsWith(ext));
-}
-
-type TriggerSignal = 'both';
-
-interface DetectionResult {
-  isCrawler: boolean;
-  triggeredBy: TriggerSignal | null;
-}
-
 const AI_CRAWLER_UAS = [
   'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',
   'Google-Extended', 'Claude-Web', 'ClaudeBot',
@@ -28,46 +16,35 @@ const AI_CRAWLER_UAS = [
   'Applebot-Extended', 'cohere-ai', 'DiffBot',
 ] as const;
 
-function detectAICrawler(
-  userAgent: string | null,
-  acceptLanguage: string | null,
-): DetectionResult {
-  const uaLower = userAgent?.toLowerCase() ?? '';
-  const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
-  const langAbsent = acceptLanguage === null;
-
-  if (uaMatch && langAbsent) {
-    return { isCrawler: true, triggeredBy: 'both' };
-  }
-  return { isCrawler: false, triggeredBy: null };
-}
-
 export default async function handler(
   request: Request,
-  _context: Context
+  _context: Context,
 ): Promise<Response | undefined> {
-  const { pathname } = new URL(request.url);
+  try {
+    const { pathname } = new URL(request.url);
 
-  // Early-exit: skip static assets
-  if (isStaticAsset(pathname)) {
-    return undefined;
-  }
+    // Early-exit: skip static assets
+    const lower = pathname.toLowerCase();
+    if (STATIC_EXTENSIONS.some((ext) => lower.endsWith(ext))) {
+      return undefined;
+    }
 
-  // Dual-signal AI crawler detection
-  const detection = detectAICrawler(
-    request.headers.get("User-Agent"),
-    request.headers.get("Accept-Language"),
-  );
+    // Dual-signal AI crawler detection
+    const ua = request.headers.get("User-Agent");
+    const lang = request.headers.get("Accept-Language");
+    const uaLower = ua?.toLowerCase() ?? '';
+    const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
+    const langAbsent = lang === null;
 
-  if (!detection.isCrawler) {
-    return undefined;
-  }
+    // Conservative: require BOTH signals
+    if (!uaMatch || !langAbsent) {
+      return undefined;
+    }
 
-  // Umami analytics — track AI crawler hit, then pass through
-  const umamiUrl = Deno.env.get("UMAMI_URL");
-  const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
-  if (umamiUrl && umamiWebsiteId) {
-    try {
+    // Umami analytics — track AI crawler hit
+    const umamiUrl = Deno.env.get("UMAMI_URL");
+    const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
+    if (umamiUrl && umamiWebsiteId) {
       await fetch(`${umamiUrl}/api/send`, {
         method: "POST",
         headers: {
@@ -86,18 +63,17 @@ export default async function handler(
             referrer: "",
             screen: "1920x1080",
             data: {
-              bot: request.headers.get("User-Agent") ?? "unknown",
-              triggeredBy: detection.triggeredBy,
+              bot: ua ?? "unknown",
+              triggeredBy: "both",
             },
           },
         }),
-      });
-    } catch {
-      // Silently ignore analytics failures
+      }).catch(() => {});
     }
+  } catch {
+    // Never crash — always pass through
   }
 
-  // Always pass through — no content rewriting
   return undefined;
 }
 
