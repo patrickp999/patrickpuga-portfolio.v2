@@ -1,4 +1,3 @@
-# Edge function disabled — kept for reference, not active
-# [[edge_functions]]
-#   function = "ai-crawler"
-#   path = "/*"
+[[edge_functions]]
+  function = "ai-analytics"
+  path = "/*"
