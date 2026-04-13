@@ -104,6 +104,48 @@ export function generateProjectsContent(projects: ProjectData[]): string {
   return `# Projects\n\n${sections.join("\n\n")}`;
 }
 
+export function generateLlmsTxt(
+  hero: PortfolioHeroData,
+  roles: ExperienceRoleData[],
+  _projects: ProjectData[],
+): string {
+  const introText = extractPlainText(hero.intro?.raw);
+  const currentRole = roles[0];
+  const tagline = currentRole
+    ? `${hero.subtitle} based in Denver, CO. ${currentRole.blurb.blurb.split(".")[0]}.`
+    : `${hero.subtitle} based in Denver, CO.`;
+
+  const lines = [
+    `# ${hero.name}`,
+    ``,
+    `> ${tagline}`,
+    ``,
+    `## About`,
+    ``,
+    introText,
+    ``,
+    `## Experience`,
+    ``,
+    `- [Experience](/experience): Professional work history and roles`,
+    ``,
+    `## Projects`,
+    ``,
+    `- [Projects](/projects): Portfolio of selected projects`,
+    ``,
+    `## Blog`,
+    ``,
+    `- [Blog](/blog): Articles on AI tooling, developer workflows, and the modern web`,
+    ``,
+    `## Contact`,
+    ``,
+    `- GitHub: https://github.com/patrickp999`,
+    `- LinkedIn: https://linkedin.com/in/patrickpuga`,
+    `- Site: https://www.patrickpuga.com`,
+  ];
+
+  return lines.join("\n");
+}
+
 // --- End utility functions ---
 
 // Explicitly define the body field so queries work even when no entries have body content
@@ -271,5 +313,77 @@ export const onPostBuild: GatsbyNode["onPostBuild"] = async ({ graphql }) => {
     } catch (error) {
       console.error(`[ai-content] Error generating ${generator.name}.txt:`, error);
     }
+  }
+
+  // Generate llms.txt at /public/llms.txt
+  try {
+    const heroResult = await graphql<{
+      allContentfulPortfolioHero: { nodes: PortfolioHeroData[] };
+    }>(`
+      query LlmsTxtHero {
+        allContentfulPortfolioHero(limit: 1) {
+          nodes {
+            name
+            subtitle
+            intro {
+              raw
+            }
+          }
+        }
+      }
+    `);
+
+    const rolesResult = await graphql<{
+      allContentfulExperienceRole: { nodes: ExperienceRoleData[] };
+    }>(`
+      query LlmsTxtExperience {
+        allContentfulExperienceRole(sort: { order: ASC }) {
+          nodes {
+            company
+            title
+            dateRange
+            blurb {
+              blurb
+            }
+            technologies
+            tags
+            companyUrl
+          }
+        }
+      }
+    `);
+
+    const projectsResult = await graphql<{
+      allContentfulProject: { nodes: ProjectData[] };
+    }>(`
+      query LlmsTxtProjects {
+        allContentfulProject(sort: { order: ASC }) {
+          nodes {
+            name
+            description {
+              description
+            }
+            tags
+            githubUrl
+            liveUrl
+          }
+        }
+      }
+    `);
+
+    const hero = heroResult.data?.allContentfulPortfolioHero?.nodes?.[0];
+    const roles = rolesResult.data?.allContentfulExperienceRole?.nodes ?? [];
+    const projects = projectsResult.data?.allContentfulProject?.nodes ?? [];
+
+    if (hero) {
+      const llmsTxt = generateLlmsTxt(hero, roles, projects);
+      const llmsPath = path.join(process.cwd(), "public", "llms.txt");
+      console.log("[ai-content] Writing llms.txt...");
+      fs.writeFileSync(llmsPath, llmsTxt, "utf-8");
+    } else {
+      console.warn("[ai-content] Warning: No hero data found, skipping llms.txt");
+    }
+  } catch (error) {
+    console.error("[ai-content] Error generating llms.txt:", error);
   }
 };
