@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 import "../styles/components/share-bar.css";
 
+declare const umami: { track: (event: string, data?: Record<string, string>) => void };
+
 interface ShareBarProps {
   postTitle: string;
 }
+
+const trackShare = (platform: string) => {
+  try {
+    const slug = typeof window !== "undefined" ? window.location.pathname : "";
+    umami.track("share", { platform, slug });
+  } catch {
+    /* umami not loaded */
+  }
+};
 
 const ShareBar: React.FC<ShareBarProps> = ({ postTitle }) => {
   const [copied, setCopied] = useState(false);
@@ -14,6 +25,7 @@ const ShareBar: React.FC<ShareBarProps> = ({ postTitle }) => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(getPageUrl());
+      trackShare("copy");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -22,16 +34,19 @@ const ShareBar: React.FC<ShareBarProps> = ({ postTitle }) => {
   };
 
   const handleLinkedIn = () => {
+    trackShare("linkedin");
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPageUrl())}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const handleX = () => {
+    trackShare("x");
     const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(getPageUrl())}&text=${encodeURIComponent(postTitle)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const handleThreads = () => {
+    trackShare("threads");
     const url = `https://www.threads.net/intent/post?text=${encodeURIComponent(`${postTitle} ${getPageUrl()}`)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
