@@ -1,0 +1,79 @@
+/* ---------- Share bar ---------- */
+.share-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.share-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  color: #64748B;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.share-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(14, 165, 233, 0.15);
+}
+
+.share-btn:active {
+  transform: scale(0.96);
+}
+
+.share-copied {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- Tooltip ---------- */
+.share-btn .share-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.share-btn:hover .share-tooltip,
+.share-copied .share-tooltip {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-btn {
+    transition: none;
+  }
+  .share-btn:active {
+    transform: none;
+  }
+  .share-btn .share-tooltip {
+    transition: none;
+  }
+}

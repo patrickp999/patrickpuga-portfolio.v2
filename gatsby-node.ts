@@ -155,6 +155,8 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
       type ContentfulBlogPost implements Node {
         body: ContentfulBlogPostBody
         tags: [String]
+        heroImage: ContentfulAsset
+        excerpt: String
       }
       type ContentfulBlogPostBody {
         raw: String

@@ -5,6 +5,7 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import { Layout } from "../components";
 import { Seo } from "../components/seo";
 import LikeButton from "../components/LikeButton";
+import ShareBar from "../components/ShareBar";
 import "../styles/blog/blog-post.css";
 
 const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
@@ -52,7 +53,12 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
         ) : (
           <p className="blog-post-empty">This post has no content yet.</p>
         )}
-        {slug && <LikeButton slug={slug} prompts={likePrompts} />}
+        {slug && (
+          <div className="blog-post-actions">
+            <LikeButton slug={slug} prompts={likePrompts} />
+            <ShareBar postTitle={title} />
+          </div>
+        )}
       </article>
     </Layout>
   );
@@ -62,12 +68,58 @@ export default BlogPostTemplate;
 
 export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
   data,
-}) => (
-  <Seo
-    title={data.contentfulBlogPost?.title ?? "Blog Post"}
-    pathname={`/blog/${data.contentfulBlogPost?.slug ?? ""}`}
-  />
-);
+}) => {
+  const post = data.contentfulBlogPost;
+  const title = post?.title ?? "Blog Post";
+  const slug = post?.slug ?? "";
+  const date = post?.date ?? "";
+  const excerpt = post?.excerpt ?? "";
+  const bodyRaw = post?.body?.raw;
+
+  // Build OG description: prefer excerpt, fall back to plain-text body extract
+  let ogDescription = excerpt;
+  if (!ogDescription && bodyRaw) {
+    try {
+      const doc = JSON.parse(bodyRaw);
+      const walk = (node: Record<string, unknown>): string[] => {
+        if (node.nodeType === "text" && typeof node.value === "string")
+          return [node.value];
+        if (Array.isArray(node.content)) return node.content.flatMap(walk);
+        return [];
+      };
+      ogDescription = walk(doc).join(" ").trim().slice(0, 155);
+    } catch {
+      ogDescription = "";
+    }
+  }
+
+  // Build absolute OG image URL — prefer heroImage, fall back to site default
+  // TODO: add og-default.png to static/ folder as a dedicated blog fallback image
+  const heroUrl = post?.heroImage?.url;
+  let ogImage = "https://www.patrickpuga.com/og-image.png";
+  if (heroUrl) {
+    ogImage = heroUrl.startsWith("//") ? `https:${heroUrl}` : heroUrl;
+  }
+
+  const pageUrl = `https://www.patrickpuga.com/blog/${slug}`;
+
+  return (
+    <>
+      <Seo title={title} description={ogDescription} pathname={`/blog/${slug}`} />
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content={pageUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={ogDescription} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:site_name" content="Patrick Puga" />
+      {date && <meta property="article:published_time" content={date} />}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={ogDescription} />
+      <meta name="twitter:image" content={ogImage} />
+    </>
+  );
+};
 
 export const query = graphql`
   query BlogPostBySlug($slug: String!) {
@@ -75,6 +127,10 @@ export const query = graphql`
       title
       slug
       date
+      excerpt
+      heroImage {
+        url
+      }
       body {
         raw
       }
