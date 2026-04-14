@@ -147,7 +147,7 @@
   }
   .blog-post-actions .like-prompt { grid-column: 1; grid-row: 1; }
   .blog-post-actions .like-row    { grid-column: 1; grid-row: 2; }
-  .blog-post-actions .share-bar   { grid-column: 1; grid-row: 3; }
+  .blog-post-actions .share-bar   { grid-column: 1; grid-row: 3; margin-top: 8px; }
 }
 
 /* ---------- Like button ---------- */
