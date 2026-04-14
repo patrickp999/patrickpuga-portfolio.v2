@@ -8,18 +8,11 @@ type BlogCardProps = {
   excerpt: string;
   slug: string;
   tags?: string[];
+  likes?: number | null;
 };
 
-const BlogCard: React.FC<BlogCardProps> = ({ title, date, excerpt, slug, tags }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ title, date, excerpt, slug, tags, likes }) => {
   const ref = useFadeIn<HTMLElement>();
-  const [likes, setLikes] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    fetch(`/.netlify/functions/likes?slug=${slug}`)
-      .then(r => r.json())
-      .then(data => setLikes(data.likes))
-      .catch(() => {});
-  }, [slug]);
 
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
@@ -35,7 +28,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ title, date, excerpt, slug, tags })
           <time className="blog-card-date" dateTime={date}>
             {formattedDate}
           </time>
-          {likes !== null && (
+          {likes !== null && likes !== undefined && (
             <span className="blog-card-likes">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path

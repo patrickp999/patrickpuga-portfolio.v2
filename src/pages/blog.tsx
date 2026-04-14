@@ -8,6 +8,17 @@ import "../styles/blog/blog-index.css";
 
 const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
   const posts = data.allContentfulBlogPost?.nodes ?? [];
+  const [likesMap, setLikesMap] = React.useState<Record<string, number>>({});
+
+  React.useEffect(() => {
+    const slugs = posts.map(p => p.slug).filter(Boolean).join(",");
+    if (!slugs) return;
+
+    fetch(`/.netlify/functions/likes?slugs=${slugs}`)
+      .then(r => r.json())
+      .then(data => setLikesMap(data.likes ?? {}))
+      .catch(() => {});
+  }, []);
 
   return (
     <Layout>
@@ -26,6 +37,7 @@ const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
                 excerpt={post.excerpt ?? ""}
                 slug={post.slug ?? ""}
                 tags={post.tags as string[] ?? []}
+                likes={likesMap[post.slug ?? ""] ?? null}
               />
             ))}
           </div>

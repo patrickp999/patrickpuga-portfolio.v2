@@ -24,7 +24,25 @@ export const handler: Handler = async (event) => {
 
   try {
     if (event.httpMethod === 'GET') {
+      const slugs = event.queryStringParameters?.slugs
       const slug = event.queryStringParameters?.slug
+
+      // Batch: GET ?slugs=a,b,c → { likes: { a: 3, b: 0, c: 12 } }
+      if (slugs) {
+        const slugList = slugs.split(',').map(s => s.trim()).filter(Boolean)
+        if (slugList.length === 0) return { statusCode: 400, headers, body: JSON.stringify({ error: 'slugs required' }) }
+
+        const result = await client.query(
+          'SELECT slug, like_count FROM post_likes WHERE slug = ANY($1)',
+          [slugList]
+        )
+        const likesMap: Record<string, number> = {}
+        for (const s of slugList) likesMap[s] = 0
+        for (const row of result.rows) likesMap[row.slug] = row.like_count
+        return { statusCode: 200, headers, body: JSON.stringify({ likes: likesMap }) }
+      }
+
+      // Single: GET ?slug=a → { slug: "a", likes: 3 }
       if (!slug) return { statusCode: 400, headers, body: JSON.stringify({ error: 'slug required' }) }
 
       const result = await client.query(
