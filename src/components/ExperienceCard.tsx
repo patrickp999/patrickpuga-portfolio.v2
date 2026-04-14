@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Changed non-linked card wrapper from <div> to <article>
 import * as React from "react";
 import { GatsbyImage } from "gatsby-plugin-image";
 import type { IGatsbyImageData } from "gatsby-plugin-image";
@@ -109,9 +111,9 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
       {cardContent}
     </a>
   ) : (
-    <div className="exp-card fade-in" ref={ref as React.RefObject<HTMLDivElement>}>
+    <article className="exp-card fade-in" ref={ref as React.RefObject<HTMLElement>}>
       {cardContent}
-    </div>
+    </article>
   );
 };
 

@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Wrapped menu links in <ul>/<li> inside <nav>
 import * as React from "react";
 import { Link } from "gatsby";
 import "../styles/components/menu.css";
@@ -35,47 +37,53 @@ export const Menu: React.FC<Props> = ({ open, onClose, links }) => {
         aria-hidden={!open}
         aria-label="Mobile menu"
       >
-        <nav className="menu-body">
-          <a
-            href="/"
-            onClick={(e) => {
-              if (window.location.pathname === "/") {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }
-              onClose();
-            }}
-            className="menu-link"
-          >
-            Home
-          </a>
-          {anchorLinks.map(({ url, name }) => (
-            <a
-              key={name}
-              href={`/${url}`}
-              onClick={(e) => {
-                if (window.location.pathname === "/") {
-                  e.preventDefault();
-                  const id = url.slice(1);
-                  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-                }
-                onClose();
-              }}
-              className="menu-link"
-            >
-              {name}
-            </a>
-          ))}
-          {routeLinks.map(({ url, name }) => (
-            <Link
-              key={name}
-              to={url}
-              onClick={onClose}
-              className="menu-link menu-link--emphasis"
-            >
-              {name}
-            </Link>
-          ))}
+        <nav className="menu-body" aria-label="Mobile navigation">
+          <ul className="menu-list">
+            <li>
+              <a
+                href="/"
+                onClick={(e) => {
+                  if (window.location.pathname === "/") {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
+                  onClose();
+                }}
+                className="menu-link"
+              >
+                Home
+              </a>
+            </li>
+            {anchorLinks.map(({ url, name }) => (
+              <li key={name}>
+                <a
+                  href={`/${url}`}
+                  onClick={(e) => {
+                    if (window.location.pathname === "/") {
+                      e.preventDefault();
+                      const id = url.slice(1);
+                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                    }
+                    onClose();
+                  }}
+                  className="menu-link"
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
+            {routeLinks.map(({ url, name }) => (
+              <li key={name}>
+                <Link
+                  to={url}
+                  onClick={onClose}
+                  className="menu-link menu-link--emphasis"
+                >
+                  {name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
       </aside>
     </>

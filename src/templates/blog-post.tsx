@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Changed blog-post-actions wrapper from <div> to <footer> (article footer)
 import * as React from "react";
 import type { PageProps } from "gatsby";
 import { graphql, Link } from "gatsby";
@@ -54,10 +56,10 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
           <p className="blog-post-empty">This post has no content yet.</p>
         )}
         {slug && (
-          <div className="blog-post-actions">
+          <footer className="blog-post-actions">
             <LikeButton slug={slug} prompts={likePrompts} />
             <ShareBar postTitle={title} />
-          </div>
+          </footer>
         )}
       </article>
     </Layout>

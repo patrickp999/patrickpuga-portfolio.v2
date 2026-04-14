@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Changed blog card list from <div> to <ul> for proper list semantics
 import * as React from "react";
 import type { PageProps } from "gatsby";
 import { graphql } from "gatsby";
@@ -28,19 +30,20 @@ const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
         {posts.length === 0 ? (
           <p className="blog-index-empty">No posts yet.</p>
         ) : (
-          <div className="blog-card-list">
+          <ul className="blog-card-list">
             {posts.map((post) => (
-              <BlogCard
-                key={post.slug}
-                title={post.title ?? ""}
-                date={post.date ?? ""}
-                excerpt={post.excerpt ?? ""}
-                slug={post.slug ?? ""}
-                tags={post.tags as string[] ?? []}
-                likes={likesMap[post.slug ?? ""] ?? null}
-              />
+              <li key={post.slug}>
+                <BlogCard
+                  title={post.title ?? ""}
+                  date={post.date ?? ""}
+                  excerpt={post.excerpt ?? ""}
+                  slug={post.slug ?? ""}
+                  tags={post.tags as string[] ?? []}
+                  likes={likesMap[post.slug ?? ""] ?? null}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </section>
     </Layout>

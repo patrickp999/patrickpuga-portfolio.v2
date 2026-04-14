@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Added aria-hidden to decorative blog-callout-divider
 import * as React from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
@@ -113,7 +115,7 @@ export const Hero: React.FC<HeroProps> = ({ data, blogCallout }) => {
         <span className="blog-btn-path">/blog</span>
         <span className="blog-btn-cursor" aria-hidden="true" />
       </a>
-      <div className="blog-callout-divider" />
+      <div className="blog-callout-divider" aria-hidden="true" />
       <div className="blog-callout-desc">
         <p className="blog-callout-body">
           {calloutDesc}
