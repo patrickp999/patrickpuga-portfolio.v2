@@ -4,13 +4,17 @@ import { graphql, Link } from "gatsby";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { Layout } from "../components";
 import { Seo } from "../components/seo";
+import LikeButton from "../components/LikeButton";
 import "../styles/blog/blog-post.css";
 
 const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
   data,
 }) => {
   const post = data.contentfulBlogPost;
+  const likePrompts = data.allContentfulLikePrompts?.nodes?.[0]?.prompts
+    ?.filter((t): t is string => Boolean(t)) ?? [];
   const title = post?.title ?? "";
+  const slug = post?.slug ?? "";
   const date = post?.date ?? "";
   const bodyRaw = post?.body?.raw;
 
@@ -48,6 +52,7 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
         ) : (
           <p className="blog-post-empty">This post has no content yet.</p>
         )}
+        {slug && <LikeButton slug={slug} prompts={likePrompts} />}
       </article>
     </Layout>
   );
@@ -72,6 +77,11 @@ export const query = graphql`
       date
       body {
         raw
+      }
+    }
+    allContentfulLikePrompts(limit: 1) {
+      nodes {
+        prompts
       }
     }
   }
