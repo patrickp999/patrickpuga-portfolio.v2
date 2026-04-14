@@ -162,7 +162,7 @@ export const Nav: React.FC = () => {
                                 {item.name}
                               </a>
                             ) : (
-                              <Link className="nav-link nav-link--emphasis" to={item.url}>
+                              <Link className="nav-link" to={item.url}>
                                 {item.name}
                               </Link>
                             )}

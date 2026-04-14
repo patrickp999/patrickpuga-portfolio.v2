@@ -3,6 +3,22 @@ import type { GatsbySSR } from "gatsby";
 
 export const onRenderBody: GatsbySSR["onRenderBody"] = ({ setHeadComponents }) => {
   setHeadComponents([
+    <link
+      key="jetbrains-mono-preconnect"
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />,
+    <link
+      key="jetbrains-mono-preconnect-gstatic"
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="jetbrains-mono"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&display=swap"
+    />,
     <script
       key="umami"
       defer

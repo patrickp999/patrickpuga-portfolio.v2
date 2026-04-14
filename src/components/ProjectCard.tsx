@@ -26,10 +26,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   thumbnail,
   index,
 }) => {
-  const ref = useFadeIn<HTMLDivElement>({ delay: index * 100 });
+  const ref = useFadeIn<HTMLAnchorElement>({ delay: index * 100 });
 
   return (
-    <div className="project-card fade-in" ref={ref}>
+    <a
+      href={githubUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="project-card project-card-link fade-in"
+      ref={ref}
+      aria-label={`${name} on GitHub`}
+    >
       {thumbnail ? (
         <div
           className="project-card-thumbnail"
@@ -61,15 +68,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </ul>
         )}
         <div className="project-card-links">
-          <a
-            href={githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <span
             className="project-card-github"
             aria-label={`${name} on GitHub`}
           >
             <FaGithub size={20} />
-          </a>
+          </span>
           {liveUrl && (
             <a
               href={liveUrl}
@@ -77,13 +81,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               rel="noopener noreferrer"
               className="project-card-github"
               aria-label={`${name} live demo`}
+              onClick={(e) => e.stopPropagation()}
             >
               <FaLink size={18} />
             </a>
           )}
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 
