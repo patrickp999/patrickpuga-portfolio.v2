@@ -158,7 +158,7 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
         date: Date @dateformat
         body: ContentfulBlogPostBody
         tags: [String]
-        heroImage: ContentfulAsset
+        heroImage: ContentfulAsset @link(from: "heroImage___NODE")
         excerpt: String
       }
       type ContentfulBlogPostBody {

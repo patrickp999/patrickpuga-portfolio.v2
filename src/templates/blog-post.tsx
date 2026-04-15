@@ -160,7 +160,8 @@ export const query = graphql`
       excerpt
       heroImage {
         gatsbyImageData(
-          layout: FULL_WIDTH
+          layout: CONSTRAINED
+          width: 1200
           placeholder: BLURRED
           formats: [AUTO, WEBP, AVIF]
         )
