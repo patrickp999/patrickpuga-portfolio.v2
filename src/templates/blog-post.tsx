@@ -3,6 +3,7 @@
 import * as React from "react";
 import type { PageProps } from "gatsby";
 import { graphql, Link } from "gatsby";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { Layout } from "../components";
 import { Seo } from "../components/seo";
@@ -13,13 +14,26 @@ import "../styles/blog/blog-post.css";
 const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
   data,
 }) => {
-  const post = data.contentfulBlogPost;
-  const likePrompts = data.allContentfulLikePrompts?.nodes?.[0]?.prompts
+  const post = data?.contentfulBlogPost;
+  if (!post) {
+    return (
+      <Layout>
+        <article className="blog-post">
+          <Link to="/blog" className="blog-post-back">
+            ← Back to blog
+          </Link>
+          <p className="blog-post-empty">Post not found.</p>
+        </article>
+      </Layout>
+    );
+  }
+
+  const likePrompts = data?.allContentfulLikePrompts?.nodes?.[0]?.prompts
     ?.filter((t): t is string => Boolean(t)) ?? [];
-  const title = post?.title ?? "";
-  const slug = post?.slug ?? "";
-  const date = post?.date ?? "";
-  const bodyRaw = post?.body?.raw;
+  const title = post.title ?? "";
+  const slug = post.slug ?? "";
+  const date = post.date ?? "";
+  const bodyRaw = post.body?.raw;
 
   const formattedDate = date
     ? new Date(date).toLocaleDateString("en-US", {
@@ -38,6 +52,11 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
     }
   }
 
+  const heroImage = post.heroImage?.gatsbyImageData
+    ? getImage(post.heroImage.gatsbyImageData)
+    : null;
+  const heroImageAlt = post.heroImage?.title ?? title;
+
   return (
     <Layout>
       <article className="blog-post">
@@ -49,6 +68,13 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
           <time className="blog-post-date" dateTime={date}>
             {formattedDate}
           </time>
+        )}
+        {heroImage && (
+          <GatsbyImage
+            image={heroImage}
+            alt={heroImageAlt}
+            className="blog-post-hero"
+          />
         )}
         {bodyContent ? (
           <div className="blog-post-body">{bodyContent}</div>
@@ -71,12 +97,14 @@ export default BlogPostTemplate;
 export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
   data,
 }) => {
-  const post = data.contentfulBlogPost;
-  const title = post?.title ?? "Blog Post";
-  const slug = post?.slug ?? "";
-  const date = post?.date ?? "";
-  const excerpt = post?.excerpt ?? "";
-  const bodyRaw = post?.body?.raw;
+  const post = data?.contentfulBlogPost;
+  if (!post) return <Seo title="Blog Post" />;
+
+  const title = post.title ?? "Blog Post";
+  const slug = post.slug ?? "";
+  const date = post.date ?? "";
+  const excerpt = post.excerpt ?? "";
+  const bodyRaw = post.body?.raw;
 
   // Build OG description: prefer excerpt, fall back to plain-text body extract
   let ogDescription = excerpt;
@@ -97,7 +125,7 @@ export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
 
   // Build absolute OG image URL — prefer heroImage, fall back to site default
   // TODO: add og-default.png to static/ folder as a dedicated blog fallback image
-  const heroUrl = post?.heroImage?.url;
+  const heroUrl = post.heroImage?.file?.url ?? null;
   let ogImage = "https://www.patrickpuga.com/og-image.png";
   if (heroUrl) {
     ogImage = heroUrl.startsWith("//") ? `https:${heroUrl}` : heroUrl;
@@ -131,7 +159,15 @@ export const query = graphql`
       date
       excerpt
       heroImage {
-        url
+        gatsbyImageData(
+          layout: FULL_WIDTH
+          placeholder: BLURRED
+          formats: [AUTO, WEBP, AVIF]
+        )
+        file {
+          url
+        }
+        title
       }
       body {
         raw

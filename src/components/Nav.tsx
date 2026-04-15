@@ -17,7 +17,10 @@ import { useScrollDirection } from "../utils/useScrollDirection";
 
 export const Nav: React.FC = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
+
+  // Skip fade-in animation on blog pages
+  const isBlog = typeof window !== "undefined" && window.location.pathname.startsWith("/blog");
+  const [mounted, setMounted] = React.useState(isBlog);
 
   // ⬇️ NEW: scroll direction from the hook
   const { scrollDirection } = useScrollDirection({
@@ -45,6 +48,7 @@ export const Nav: React.FC = () => {
   }, [menuOpen]);
 
   React.useEffect(() => {
+    if (isBlog) return; // already mounted instantly on blog pages
     const t = setTimeout(() => setMounted(true), 50); // small delay to avoid FOUC
     return () => clearTimeout(t);
   }, []);
@@ -65,6 +69,10 @@ export const Nav: React.FC = () => {
     };
   }, [menuOpen]);
 
+  const fadeTimeout = isBlog
+    ? { appear: 0, enter: 0, exit: 0 }
+    : { appear: FADE_DURATION.appear, enter: FADE_DURATION.enter, exit: FADE_DURATION.exit };
+
   return (
     <>
       <header className={headerClasses} role="banner">
@@ -78,12 +86,8 @@ export const Nav: React.FC = () => {
                     {mounted && (
                       <CSSTransition
                         key="home"
-                        classNames="fadelink"
-                        timeout={{
-                          appear: FADE_DURATION.appear,
-                          enter: FADE_DURATION.enter,
-                          exit: FADE_DURATION.exit,
-                        }}
+                        classNames={isBlog ? "" : "fadelink"}
+                        timeout={fadeTimeout}
                         appear
                       >
                         <li className="nav-item" style={{ transitionDelay: "0ms" }}>
@@ -127,18 +131,14 @@ export const Nav: React.FC = () => {
                       DEFAULT_LINKS.map((item, i) => (
                         <CSSTransition
                           key={item.name}
-                          classNames="fadelink"
-                          timeout={{
-                            appear: FADE_DURATION.appear,
-                            enter: FADE_DURATION.enter,
-                            exit: FADE_DURATION.exit,
-                          }}
+                          classNames={isBlog ? "" : "fadelink"}
+                          timeout={fadeTimeout}
                           appear
                         >
                           <li
                             className="nav-item"
                             style={{
-                              transitionDelay: `${(i + 1) * LINK_STAGGER_MS}ms`,
+                              transitionDelay: isBlog ? "0ms" : `${(i + 1) * LINK_STAGGER_MS}ms`,
                             }}
                           >
                             {item.url.startsWith("#") ? (
@@ -178,14 +178,14 @@ export const Nav: React.FC = () => {
                 {mounted && (
                   <CSSTransition
                     key="hamburger"
-                    classNames="fadelink"
-                    timeout={2000}
+                    classNames={isBlog ? "" : "fadelink"}
+                    timeout={isBlog ? 0 : 2000}
                     appear
                   >
                     <button
                       className="hamburger"
                       style={{
-                        transitionDelay: `${HAMBURGER_DELAY_MS}ms`,
+                        transitionDelay: isBlog ? "0ms" : `${HAMBURGER_DELAY_MS}ms`,
                       }}
                       aria-label="Toggle menu"
                       aria-expanded={menuOpen}

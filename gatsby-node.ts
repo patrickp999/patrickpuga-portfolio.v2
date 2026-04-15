@@ -153,6 +153,9 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
   ({ actions }) => {
     actions.createTypes(`
       type ContentfulBlogPost implements Node {
+        title: String
+        slug: String
+        date: Date @dateformat
         body: ContentfulBlogPostBody
         tags: [String]
         heroImage: ContentfulAsset
