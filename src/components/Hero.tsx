@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Added aria-hidden to decorative blog-callout-divider
 import * as React from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
@@ -12,6 +14,11 @@ import {
   HERO_FALLBACK,
 } from "../utils/constants";
 
+export type BlogCalloutContent = {
+  description: string;
+  readMoreLabel: string;
+};
+
 export type HeroContent = {
   name: string;
   subtitle: string;
@@ -21,9 +28,10 @@ export type HeroContent = {
 
 type HeroProps = {
   data?: Partial<HeroContent>;
+  blogCallout?: Partial<BlogCalloutContent> | null;
 };
 
-export const Hero: React.FC<HeroProps> = ({ data }) => {
+export const Hero: React.FC<HeroProps> = ({ data, blogCallout }) => {
   const [mounted, setMounted] = React.useState(false);
   const [viewportWidth, setViewportWidth] = React.useState<number | undefined>(undefined);
   const content: HeroContent = { ...HERO_FALLBACK, ...data };
@@ -46,6 +54,10 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     const t = setTimeout(() => setMounted(true), 50); // tiny delay to avoid FOUC
     return () => clearTimeout(t);
   }, []);
+
+  const calloutDesc = blogCallout?.description
+    ?? "Honest writing about building with AI — real workflows, real tools, real opinions. Not a tutorial blog.";
+  const calloutLabel = blogCallout?.readMoreLabel ?? "Read the blog";
 
   const items = [
     ...(image
@@ -93,6 +105,26 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
           </div>,
         ]
       : []),
+    <div
+      key="blog-callout"
+      className="blog-callout"
+      style={{ transitionDelay: `${baseDelay + (image ? 600 : 500)}ms` }}
+    >
+      <a href="/blog" className="blog-btn">
+        <span className="blog-btn-prompt">&gt;_</span>
+        <span className="blog-btn-path">/blog</span>
+        <span className="blog-btn-cursor" aria-hidden="true" />
+      </a>
+      <div className="blog-callout-divider" aria-hidden="true" />
+      <div className="blog-callout-desc">
+        <p className="blog-callout-body">
+          {calloutDesc}
+        </p>
+        <a href="/blog" className="blog-callout-readmore">
+          {calloutLabel}
+        </a>
+      </div>
+    </div>,
   ];
 
   return (

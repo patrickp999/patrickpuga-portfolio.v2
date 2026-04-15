@@ -25,11 +25,19 @@
   background-color: var(--accent);
 }
 
-/* Two-column grid */
+/* Two-column grid — equal-height cards */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
   gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.projects-grid > li {
+  display: flex;
 }
 
 /* Card */
@@ -40,6 +48,26 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Clickable card wrapper */
+.project-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.project-card-link:hover,
+.project-card-link:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(14, 165, 233, 0.18);
+}
+
+.project-card-link:focus:not(:focus-visible) {
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 /* Gradient thumbnail */

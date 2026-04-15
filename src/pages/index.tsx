@@ -9,6 +9,7 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
   const heroNode = data.hero.nodes[0];
   const workHistoryNodes = data.allContentfulExperienceRole.nodes;
   const projectNodes = data.allContentfulProject.nodes;
+  const blogCalloutNode = data.allContentfulBlogCallout?.nodes[0];
 
   return (
     <Layout>
@@ -20,6 +21,14 @@ const IndexPage: React.FC<PageProps<Queries.IndexPageQuery>> = ({ data }) => {
                 subtitle: heroNode.subtitle ?? "",
                 avatar: heroNode.avatar?.gatsbyImageData,
                 intro: heroNode.intro?.raw,
+              }
+            : undefined
+        }
+        blogCallout={
+          blogCalloutNode
+            ? {
+                description: blogCalloutNode.description ?? undefined,
+                readMoreLabel: blogCalloutNode.readMoreLabel ?? undefined,
               }
             : undefined
         }
@@ -101,6 +110,13 @@ export const pageQuery = graphql`
             formats: [AUTO, WEBP, AVIF]
           )
         }
+      }
+    }
+
+    allContentfulBlogCallout(limit: 1) {
+      nodes {
+        description
+        readMoreLabel
       }
     }
   }

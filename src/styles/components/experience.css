@@ -45,7 +45,7 @@
 .exp-card-link:hover,
 .exp-card-link:focus-visible {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(14, 165, 233, 0.18);
 }
 
 .exp-card-link:focus:not(:focus-visible) {
@@ -128,7 +128,7 @@
 /* Blurb paragraph */
 .exp-card-blurb {
   margin: 0 0 16px 0;
-  color: var(--text);
+  color: var(--muted);
   line-height: 1.6;
 }
 

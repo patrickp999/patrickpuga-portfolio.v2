@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Changed <div> wrapper to <nav> with aria-label for social navigation
 import * as React from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
@@ -6,7 +8,7 @@ type Props = {
 };
 
 const SocialLinks: React.FC<Props> = ({ className }) => (
-  <div className={`contact-links${className ? ` ${className}` : ""}`}>
+  <nav className={`contact-links${className ? ` ${className}` : ""}`} aria-label="Social links">
     <a
       href="https://github.com/patrickp999"
       target="_blank"
@@ -25,7 +27,7 @@ const SocialLinks: React.FC<Props> = ({ className }) => (
     >
       <FaLinkedin />
     </a>
-  </div>
+  </nav>
 );
 
 export default SocialLinks;

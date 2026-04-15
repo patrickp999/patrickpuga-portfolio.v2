@@ -20,6 +20,19 @@ export const Seo: React.FC<Props> = ({ title, description, pathname }) => {
   const fullTitle = title ? `${meta.title} | ${title}` : meta.title;
   const url = pathname ? `${meta.siteUrl}${pathname}` : meta.siteUrl;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: meta.title,
+    url: meta.siteUrl,
+    image: `${meta.siteUrl}/og-image.png`,
+    jobTitle: "Senior Software Engineer",
+    sameAs: [
+      "https://github.com/patrickp999",
+      "https://linkedin.com/in/patrickpuga",
+    ],
+  };
+
   return (
     <>
       <title>{fullTitle}</title>
@@ -36,6 +49,7 @@ export const Seo: React.FC<Props> = ({ title, description, pathname }) => {
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description ?? meta.description} />
       <meta name="twitter:image" content={`${meta.siteUrl}/og-image.png`} />
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </>
   );
 };

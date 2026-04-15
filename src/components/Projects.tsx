@@ -1,3 +1,5 @@
+// Semantic HTML audit:
+// - Changed projects grid from <div> to <ul> for proper list semantics
 import * as React from "react";
 
 import ProjectCard from "./ProjectCard";
@@ -49,20 +51,21 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
         Projects
       </h2>
 
-      <div className="projects-grid">
+      <ul className="projects-grid">
         {projects.map((project, index) => (
-          <ProjectCard
-            key={project.name ?? index}
-            name={project.name ?? ""}
-            description={project.description?.description ?? ""}
-            tags={[...(project.tags?.filter(Boolean) ?? [])] as string[]}
-            githubUrl={project.githubUrl ?? ""}
-            liveUrl={project.liveUrl ?? null}
-            thumbnail={project.thumbnail?.gatsbyImageData ?? null}
-            index={index}
-          />
+          <li key={project.name ?? index}>
+            <ProjectCard
+              name={project.name ?? ""}
+              description={project.description?.description ?? ""}
+              tags={[...(project.tags?.filter(Boolean) ?? [])] as string[]}
+              githubUrl={project.githubUrl ?? ""}
+              liveUrl={project.liveUrl ?? null}
+              thumbnail={project.thumbnail?.gatsbyImageData ?? null}
+              index={index}
+            />
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 };

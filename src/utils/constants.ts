@@ -10,6 +10,7 @@ export const DEFAULT_LINKS = [
   { url: "#experience", name: "Experience" },
   { url: "#projects", name: "Projects" },
   { url: "#contact", name: "Contact" },
+  { url: "/blog", name: "Blog" },
 ] as const;
 
 /* --------------- Animation timing --------------- */
