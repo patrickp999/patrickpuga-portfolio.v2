@@ -124,30 +124,25 @@ export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
   }
 
   // Build absolute OG image URL — prefer heroImage, fall back to site default
-  // TODO: add og-default.png to static/ folder as a dedicated blog fallback image
   const heroUrl = post.heroImage?.file?.url ?? null;
-  let ogImage = "https://www.patrickpuga.com/og-image.png";
+  let ogImage: string | undefined;
   if (heroUrl) {
-    ogImage = heroUrl.startsWith("//") ? `https:${heroUrl}` : heroUrl;
+    // Contentful URLs may start with "//" — normalize to https
+    const fullUrl = heroUrl.startsWith("//") ? `https:${heroUrl}` : heroUrl;
+    // Request a 1200×630 rendition optimized for social sharing
+    ogImage = `${fullUrl}?w=1200&h=630&fit=fill&fm=jpg&q=80`;
   }
 
-  const pageUrl = `https://www.patrickpuga.com/blog/${slug}`;
-
   return (
-    <>
-      <Seo title={title} description={ogDescription} pathname={`/blog/${slug}`} />
-      <meta property="og:type" content="article" />
-      <meta property="og:url" content={pageUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={ogDescription} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:site_name" content="Patrick Puga" />
+    <Seo
+      title={title}
+      description={ogDescription}
+      pathname={`/blog/${slug}`}
+      image={ogImage}
+      type="article"
+    >
       {date && <meta property="article:published_time" content={date} />}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={ogDescription} />
-      <meta name="twitter:image" content={ogImage} />
-    </>
+    </Seo>
   );
 };
 

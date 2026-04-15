@@ -52,7 +52,13 @@ const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
 
 export default BlogPage;
 
-export const Head = () => <Seo title="Blog" pathname="/blog" />;
+export const Head = () => (
+  <Seo
+    title="Blog"
+    description="Articles on AI tooling, developer workflows, and the modern web by Patrick Puga."
+    pathname="/blog"
+  />
+);
 
 export const query = graphql`
   query BlogIndex {
