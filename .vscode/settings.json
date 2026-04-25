@@ -5,12 +5,7 @@
   },
 
   // ✅ Ensure ESLint runs on all relevant file types
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   // Optional: run ESLint autofix on save
   "editor.codeActionsOnSave": {
@@ -22,5 +17,7 @@
       "mode": "auto"
     }
   ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "kiroAgent.configureMCP": "Enabled"
 }
