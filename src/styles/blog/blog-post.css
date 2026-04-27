@@ -5,13 +5,6 @@
   padding: 64px 16px;
 }
 
-.blog-post-title {
-  margin: 0 0 12px 0;
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 700;
-  color: var(--text);
-}
-
 .blog-post-date {
   display: block;
   margin: 0 0 32px 0;
@@ -159,9 +152,19 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
   }
-  .blog-post-actions .like-prompt { grid-column: 1; grid-row: 1; }
-  .blog-post-actions .like-row    { grid-column: 1; grid-row: 2; }
-  .blog-post-actions .share-bar   { grid-column: 1; grid-row: 3; margin-top: 8px; }
+  .blog-post-actions .like-prompt {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .blog-post-actions .like-row {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .blog-post-actions .share-bar {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 8px;
+  }
 }
 
 /* ---------- Like button ---------- */
@@ -176,7 +179,7 @@
 
 .like-prompt {
   font-size: 14px;
-  color: #64748B;
+  color: #64748b;
   line-height: 1.5;
 }
 
@@ -190,36 +193,34 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #1E293B;
+  background: #1e293b;
   border: 1px solid #334155;
   border-radius: 10px;
   padding: 12px 20px;
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 13px;
   color: #94a3b8;
   letter-spacing: 0.04em;
-  transition:
-    border-color 0.2s ease,
-    color        0.2s ease,
-    background   0.2s ease,
-    box-shadow   0.2s ease,
-    transform    0.1s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
 }
 
 .like-btn:hover {
-  border-color: #0EA5E9;
-  color: #F8FAFC;
-  box-shadow: 0 0 0 1px #0EA5E9, 0 0 16px rgba(14,165,233,0.18);
+  border-color: #0ea5e9;
+  color: #f8fafc;
+  box-shadow: 0 0 0 1px #0ea5e9, 0 0 16px rgba(14, 165, 233, 0.18);
 }
 
-.like-btn:active { transform: scale(0.96); }
+.like-btn:active {
+  transform: scale(0.96);
+}
 
 .like-btn.liked {
-  border-color: #0EA5E9;
-  background: rgba(14,165,233,0.12);
-  color: #0EA5E9;
-  box-shadow: 0 0 0 1px #0EA5E9, 0 0 20px rgba(14,165,233,0.18);
+  border-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.12);
+  color: #0ea5e9;
+  box-shadow: 0 0 0 1px #0ea5e9, 0 0 20px rgba(14, 165, 233, 0.18);
   cursor: default;
 }
 
@@ -228,23 +229,33 @@
 }
 
 @keyframes like-pop {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .like-count {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 12px;
-  color: #64748B;
+  color: #64748b;
   letter-spacing: 0.06em;
 }
 
 .like-count span {
-  color: #0EA5E9;
+  color: #0ea5e9;
   font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .like-btn, .like-btn.pop { animation: none; transition: none; }
+  .like-btn,
+  .like-btn.pop {
+    animation: none;
+    transition: none;
+  }
 }

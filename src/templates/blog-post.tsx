@@ -11,9 +11,7 @@ import LikeButton from "../components/LikeButton";
 import ShareBar from "../components/ShareBar";
 import "../styles/blog/blog-post.css";
 
-const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
-  data,
-}) => {
+const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({ data }) => {
   const post = data?.contentfulBlogPost;
   if (!post) {
     return (
@@ -28,8 +26,9 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
     );
   }
 
-  const likePrompts = data?.allContentfulLikePrompts?.nodes?.[0]?.prompts
-    ?.filter((t): t is string => Boolean(t)) ?? [];
+  const likePrompts =
+    data?.allContentfulLikePrompts?.nodes?.[0]?.prompts?.filter((t): t is string => Boolean(t)) ??
+    [];
   const title = post.title ?? "";
   const slug = post.slug ?? "";
   const date = post.date ?? "";
@@ -63,18 +62,13 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
         <Link to="/blog" className="blog-post-back">
           ← Back to blog
         </Link>
-        <h1 className="blog-post-title">{title}</h1>
         {formattedDate && (
           <time className="blog-post-date" dateTime={date}>
             {formattedDate}
           </time>
         )}
         {heroImage && (
-          <GatsbyImage
-            image={heroImage}
-            alt={heroImageAlt}
-            className="blog-post-hero"
-          />
+          <GatsbyImage image={heroImage} alt={heroImageAlt} className="blog-post-hero" />
         )}
         {bodyContent ? (
           <div className="blog-post-body">{bodyContent}</div>
@@ -94,9 +88,7 @@ const BlogPostTemplate: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
 
 export default BlogPostTemplate;
 
-export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
-  data,
-}) => {
+export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({ data }) => {
   const post = data?.contentfulBlogPost;
   if (!post) return <Seo title="Blog Post" />;
 
@@ -112,8 +104,7 @@ export const Head: React.FC<PageProps<Queries.BlogPostBySlugQuery>> = ({
     try {
       const doc = JSON.parse(bodyRaw);
       const walk = (node: Record<string, unknown>): string[] => {
-        if (node.nodeType === "text" && typeof node.value === "string")
-          return [node.value];
+        if (node.nodeType === "text" && typeof node.value === "string") return [node.value];
         if (Array.isArray(node.content)) return node.content.flatMap(walk);
         return [];
       };
