@@ -43,7 +43,7 @@ const AI_CRAWLER_UAS = [
 
 export default async function handler(
   request: Request,
-  _context: Context,
+  context: Context,
 ): Promise<Response | undefined> {
   try {
     const { pathname } = new URL(request.url);
@@ -61,44 +61,44 @@ export default async function handler(
     const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
     const langAbsent = lang === null;
 
-    // Single-signal: trigger if EITHER signal matches
-    if (!uaMatch && !langAbsent) {
+    // Dual-signal: trigger only when BOTH signals match
+    if (!uaMatch || !langAbsent) {
       return undefined;
     }
 
-    const triggeredBy = uaMatch && langAbsent ? "both" : uaMatch ? "ua" : "accept-language";
     const matchedAs = AI_CRAWLER_UAS.find((id) => uaLower.includes(id.toLowerCase())) ?? "unknown";
 
     // Umami analytics — track AI crawler hit
     const umamiUrl = Deno.env.get("UMAMI_URL");
     const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
     if (umamiUrl && umamiWebsiteId) {
-      fetch(`${umamiUrl}/api/send`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "User-Agent":
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        },
-        body: JSON.stringify({
-          type: "event",
-          payload: {
-            website: umamiWebsiteId,
-            hostname: "www.patrickpuga.com",
-            url: pathname,
-            title: "AI Crawler",
-            name: "ai-crawler",
-            language: "en-US",
-            referrer: "",
-            screen: "1920x1080",
-            data: {
-              bot: ua ?? "unknown",
-              matchedAs,
-              triggeredBy,
-            },
+      context.waitUntil(
+        fetch(`${umamiUrl}/api/send`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-Agent":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
           },
-        }),
-      }).catch(() => {});
+          body: JSON.stringify({
+            type: "event",
+            payload: {
+              website: umamiWebsiteId,
+              hostname: "www.patrickpuga.com",
+              url: pathname,
+              title: "AI Crawler",
+              name: "ai-crawler",
+              language: "en-US",
+              referrer: "",
+              screen: "1920x1080",
+              data: {
+                bot: ua ?? "unknown",
+                matchedAs,
+              },
+            },
+          }),
+        }).catch(() => {}),
+      );
     }
   } catch {
     // Never crash — always pass through
