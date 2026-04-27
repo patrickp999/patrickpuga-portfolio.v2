@@ -3,17 +3,42 @@ import type { Config, Context } from "@netlify/edge-functions";
 declare const Deno: { env: { get(key: string): string | undefined } };
 
 const STATIC_EXTENSIONS = [
-  '.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg',
-  '.ico', '.woff', '.woff2', '.ttf', '.eot', '.map',
-  '.webp', '.avif', '.json', '.xml', '.webmanifest',
+  ".js",
+  ".css",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".svg",
+  ".ico",
+  ".woff",
+  ".woff2",
+  ".ttf",
+  ".eot",
+  ".map",
+  ".webp",
+  ".avif",
+  ".json",
+  ".xml",
+  ".webmanifest",
 ] as const;
 
 const AI_CRAWLER_UAS = [
-  'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',
-  'Google-Extended', 'Claude-Web', 'ClaudeBot',
-  'anthropic-ai', 'Bytespider', 'CCBot',
-  'PerplexityBot', 'Amazonbot', 'FacebookBot',
-  'Applebot-Extended', 'cohere-ai', 'DiffBot',
+  "GPTBot",
+  "ChatGPT-User",
+  "OAI-SearchBot",
+  "Google-Extended",
+  "Claude-Web",
+  "ClaudeBot",
+  "anthropic-ai",
+  "Bytespider",
+  "CCBot",
+  "PerplexityBot",
+  "Amazonbot",
+  "FacebookBot",
+  "Applebot-Extended",
+  "cohere-ai",
+  "DiffBot",
 ] as const;
 
 export default async function handler(
@@ -32,7 +57,7 @@ export default async function handler(
     // Dual-signal AI crawler detection
     const ua = request.headers.get("User-Agent");
     const lang = request.headers.get("Accept-Language");
-    const uaLower = ua?.toLowerCase() ?? '';
+    const uaLower = ua?.toLowerCase() ?? "";
     const uaMatch = AI_CRAWLER_UAS.some((id) => uaLower.includes(id.toLowerCase()));
     const langAbsent = lang === null;
 
@@ -41,18 +66,19 @@ export default async function handler(
       return undefined;
     }
 
-    const triggeredBy = uaMatch && langAbsent ? 'both' : uaMatch ? 'ua' : 'accept-language';
-    const matchedAs = AI_CRAWLER_UAS.find((id) => uaLower.includes(id.toLowerCase())) ?? 'unknown';
+    const triggeredBy = uaMatch && langAbsent ? "both" : uaMatch ? "ua" : "accept-language";
+    const matchedAs = AI_CRAWLER_UAS.find((id) => uaLower.includes(id.toLowerCase())) ?? "unknown";
 
     // Umami analytics — track AI crawler hit
     const umamiUrl = Deno.env.get("UMAMI_URL");
     const umamiWebsiteId = Deno.env.get("UMAMI_WEBSITE_ID");
     if (umamiUrl && umamiWebsiteId) {
-      await fetch(`${umamiUrl}/api/send`, {
+      fetch(`${umamiUrl}/api/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         },
         body: JSON.stringify({
           type: "event",
