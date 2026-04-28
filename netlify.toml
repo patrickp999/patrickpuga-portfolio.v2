@@ -1,4 +1,3 @@
-# Temporarily disabled to diagnose Facebook crawler 403
-# [[edge_functions]]
-#   function = "ai-analytics"
-#   path = "/*"
+[[edge_functions]]
+  function = "ai-analytics"
+  path = "/*"
