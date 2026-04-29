@@ -7,6 +7,9 @@ interface LikeButtonProps {
 
 const DEFAULT_PROMPT = "Found this useful or interesting?";
 
+const SUPABASE_URL = process.env.GATSBY_SUPABASE_URL ?? "";
+const SUPABASE_ANON_KEY = process.env.GATSBY_SUPABASE_ANON_KEY ?? "";
+
 const LikeButton: React.FC<LikeButtonProps> = ({ slug, prompts }) => {
   const storageKey = `liked:${slug}`;
   const [likes, setLikes] = useState<number | null>(null);
@@ -21,11 +24,21 @@ const LikeButton: React.FC<LikeButtonProps> = ({ slug, prompts }) => {
   useEffect(() => {
     setLiked(localStorage.getItem(storageKey) === "true");
 
-    // Read like count directly from Supabase (public SELECT policy)
-    fetch(`/.netlify/functions/likes?slug=${slug}`)
-      .then((r) => r.json())
-      .then((data) => setLikes(data.likes))
-      .catch(() => {});
+    // Read like count directly from Supabase REST API (public SELECT policy)
+    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+      fetch(
+        `${SUPABASE_URL}/rest/v1/post_likes?slug=eq.${encodeURIComponent(slug)}&select=like_count`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        },
+      )
+        .then((r) => r.json())
+        .then((rows) => setLikes(rows?.[0]?.like_count ?? 0))
+        .catch(() => {});
+    }
   }, [slug]);
 
   const handleLike = async () => {

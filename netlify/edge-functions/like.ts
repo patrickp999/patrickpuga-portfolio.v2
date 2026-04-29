@@ -69,14 +69,8 @@ export default async function handler(request: Request, context: Context): Promi
     return json({ error: "Server misconfiguration" }, 500);
   }
 
-  // Upsert via Supabase REST API (PostgREST)
-  // Uses the Prefer header to get the updated row back and to upsert on conflict.
-  // The RPC approach is cleaner for increment-on-conflict, so we use a two-step:
-  // 1. Try to read the current count
-  // 2. Upsert with the incremented value
-  // Actually, PostgREST supports upsert with `on_conflict`, but not increment.
-  // Safest approach: use a Supabase RPC or raw SQL via the REST API.
-  // Since we can't guarantee an RPC exists, we'll do a read-then-upsert.
+  // Increment via Supabase REST API (PostgREST)
+  // Read current count, then INSERT (new row) or PATCH (existing row).
 
   const headers = {
     apikey: serviceRoleKey,
@@ -86,7 +80,7 @@ export default async function handler(request: Request, context: Context): Promi
   };
 
   try {
-    // Step 1: Read current count
+    // Step 1: Read current row
     const readRes = await fetch(
       `${supabaseUrl}/rest/v1/post_likes?slug=eq.${encodeURIComponent(slug)}&select=like_count`,
       { headers },
@@ -99,27 +93,36 @@ export default async function handler(request: Request, context: Context): Promi
     }
 
     const rows = await readRes.json();
-    const currentCount: number = rows.length > 0 ? rows[0].like_count : 0;
-    const newCount = currentCount + 1;
+    let writeRes: globalThis.Response;
 
-    // Step 2: Upsert with new count
-    const upsertRes = await fetch(`${supabaseUrl}/rest/v1/post_likes`, {
-      method: "POST",
-      headers: {
-        ...headers,
-        Prefer: "return=representation,resolution=merge-duplicates",
-      },
-      body: JSON.stringify({ slug, like_count: newCount }),
-    });
+    if (rows.length === 0) {
+      // Step 2a: Row doesn't exist — INSERT
+      writeRes = await fetch(`${supabaseUrl}/rest/v1/post_likes`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ slug, like_count: 1 }),
+      });
+    } else {
+      // Step 2b: Row exists — PATCH to increment
+      const newCount = rows[0].like_count + 1;
+      writeRes = await fetch(
+        `${supabaseUrl}/rest/v1/post_likes?slug=eq.${encodeURIComponent(slug)}`,
+        {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({ like_count: newCount }),
+        },
+      );
+    }
 
-    if (!upsertRes.ok) {
-      const errText = await upsertRes.text();
-      console.error("Supabase upsert error:", errText);
+    if (!writeRes.ok) {
+      const errText = await writeRes.text();
+      console.error("Supabase write error:", errText);
       return json({ error: "Failed to update like count" }, 502);
     }
 
-    const [updated] = await upsertRes.json();
-    return json({ like_count: updated?.like_count ?? newCount });
+    const [updated] = await writeRes.json();
+    return json({ like_count: updated?.like_count ?? 1 });
   } catch (err) {
     console.error("Unexpected error:", err);
     return json({ error: "Internal server error" }, 500);

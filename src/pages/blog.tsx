@@ -13,12 +13,27 @@ const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
   const [likesMap, setLikesMap] = React.useState<Record<string, number>>({});
 
   React.useEffect(() => {
-    const slugs = posts.map(p => p.slug).filter(Boolean).join(",");
-    if (!slugs) return;
+    const slugList = posts.map((p) => p.slug).filter(Boolean) as string[];
+    if (slugList.length === 0) return;
 
-    fetch(`/.netlify/functions/likes?slugs=${slugs}`)
-      .then(r => r.json())
-      .then(data => setLikesMap(data.likes ?? {}))
+    const supabaseUrl = process.env.GATSBY_SUPABASE_URL;
+    const anonKey = process.env.GATSBY_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !anonKey) return;
+
+    // Read like counts directly from Supabase REST API (public SELECT policy)
+    const filter = slugList.map((s) => `"${s}"`).join(",");
+    fetch(`${supabaseUrl}/rest/v1/post_likes?slug=in.(${filter})&select=slug,like_count`, {
+      headers: {
+        apikey: anonKey,
+        Authorization: `Bearer ${anonKey}`,
+      },
+    })
+      .then((r) => r.json())
+      .then((rows: { slug: string; like_count: number }[]) => {
+        const map: Record<string, number> = {};
+        for (const row of rows) map[row.slug] = row.like_count;
+        setLikesMap(map);
+      })
       .catch(() => {});
   }, []);
 
@@ -38,7 +53,7 @@ const BlogPage: React.FC<PageProps<Queries.BlogIndexQuery>> = ({ data }) => {
                   date={post.date ?? ""}
                   excerpt={post.excerpt ?? ""}
                   slug={post.slug ?? ""}
-                  tags={post.tags as string[] ?? []}
+                  tags={(post.tags as string[]) ?? []}
                   likes={likesMap[post.slug ?? ""] ?? null}
                 />
               </li>
