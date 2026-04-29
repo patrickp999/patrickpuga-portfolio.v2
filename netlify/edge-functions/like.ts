@@ -6,26 +6,26 @@ import type { Config, Context } from "@netlify/edge-functions";
  * Accepts { "slug": "some-post-slug" } and upserts the like count
  * in the Supabase `post_likes` table using the service role key.
  *
- * Rate-limited to 1 like per IP per post per 24 hours using an
- * in-memory map (resets on cold start — good enough for abuse protection).
+ * Client-side localStorage prevents duplicate likes per browser.
+ * Rate limiting is available below (commented out) if needed.
  */
 
 // ── Rate-limit store (per-isolate) ──────────────────────────────
-const RATE_LIMIT_MS = 24 * 60 * 60 * 1000; // 24 hours
-const rateLimitMap = new Map<string, number>(); // key → timestamp
-
-function isRateLimited(ip: string, slug: string): boolean {
-  const key = `${ip}::${slug}`;
-  const last = rateLimitMap.get(key);
-  const now = Date.now();
-
-  if (last && now - last < RATE_LIMIT_MS) {
-    return true;
-  }
-
-  rateLimitMap.set(key, now);
-  return false;
-}
+// const RATE_LIMIT_MS = 24 * 60 * 60 * 1000; // 24 hours
+// const rateLimitMap = new Map<string, number>(); // key → timestamp
+//
+// function isRateLimited(ip: string, slug: string): boolean {
+//   const key = `${ip}::${slug}`;
+//   const last = rateLimitMap.get(key);
+//   const now = Date.now();
+//
+//   if (last && now - last < RATE_LIMIT_MS) {
+//     return true;
+//   }
+//
+//   rateLimitMap.set(key, now);
+//   return false;
+// }
 
 // ── Helpers ─────────────────────────────────────────────────────
 function json(body: Record<string, unknown>, status = 200): Response {
@@ -36,7 +36,7 @@ function json(body: Record<string, unknown>, status = 200): Response {
 }
 
 // ── Handler ─────────────────────────────────────────────────────
-export default async function handler(request: Request, context: Context): Promise<Response> {
+export default async function handler(request: Request, _context: Context): Promise<Response> {
   // Only accept POST
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, 405);
@@ -55,11 +55,11 @@ export default async function handler(request: Request, context: Context): Promi
     return json({ error: "slug is required" }, 400);
   }
 
-  // Rate-limit check
-  const ip = context.ip || "unknown";
-  if (isRateLimited(ip, slug)) {
-    return json({ error: "Rate limited — try again later" }, 429);
-  }
+  // Rate-limit check (uncomment to enable)
+  // const ip = context.ip || "unknown";
+  // if (isRateLimited(ip, slug)) {
+  //   return json({ error: "Rate limited — try again later" }, 429);
+  // }
 
   // Env vars
   const supabaseUrl = Netlify.env.get("SUPABASE_URL");
